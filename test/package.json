@@ -1,0 +1,24 @@
+{
+	"name": "test",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"build": "rbxtsc",
+		"watch": "rbxtsc -w"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs",
+	"devDependencies": {
+		"@rbxts/compiler-types": "^3.0.0-types.0",
+		"@rbxts/types": "^1.0.925",
+		"roblox-ts": "^3.0.0",
+		"typescript": "5"
+	},
+	"dependencies": {
+		"@rbxts/altmake": "^0.1.5",
+		"@rbxts/toucan": "0.5.2"
+	}
+}

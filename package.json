@@ -1,0 +1,41 @@
+{
+	"name": "@rbxts/toucan-debugger",
+	"version": "1.0.0",
+	"description": "",
+	"main": "out/init.lua",
+	"scripts": {
+		"setup": "bun i && bun i --cwd test && rokit install",
+		"build": "rbxtsc",
+		"dev": "concurrently -n \"LIB,TEST,ROJO\" -c \"blue,magenta,yellow\" \"rbxtsc -w\" \"rbxtsc -p test -w\" \"rojo serve test/default.project.json\"",
+		"prepublishOnly": "npm run build",
+		"lint": "biome check --write .",
+		"format": "biome format --write .",
+		"predev": "rbxtsc && rbxtsc -p test",
+		"preinstall": "npx only-allow bun"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs",
+	"types": "out/index.d.ts",
+	"files": [
+		"out",
+		"!**/*.tsbuildinfo"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.5.0",
+		"@rbxts/compiler-types": "^3.0.0-types.0",
+		"@rbxts/types": "^1.0.925",
+		"concurrently": "^10.0.3",
+		"roblox-ts": "^3.0.0",
+		"typescript": "5"
+	},
+	"dependencies": {
+		"@rbxts/altmake": "^0.1.5",
+		"@rbxts/services": "^1.6.0",
+		"@rbxts/toucan": "0.5.2"
+	}
+}
