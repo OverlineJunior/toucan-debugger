@@ -44,7 +44,8 @@ export interface IconProps {
 	color?: Color3
 	position?: UDim2
 	rotation?: number
-	anchor?: Vector2
+    anchor?: Vector2,
+	order?: number
 }
 
 function makeIcon(id: number, props?: IconProps): ImageLabel {
@@ -62,7 +63,8 @@ function makeIcon(id: number, props?: IconProps): ImageLabel {
 		BackgroundTransparency: 1,
 		Position: props?.position ?? UDim2.fromScale(0, 0),
 		Rotation: props?.rotation ?? 0,
-		AnchorPoint: props?.anchor ?? Vector2.zero,
+        AnchorPoint: props?.anchor ?? Vector2.zero,
+        LayoutOrder: props?.order ?? 0,
 
 		Children: make('UIAspectRatioConstraint'),
 	})
