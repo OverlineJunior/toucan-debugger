@@ -1,12 +1,24 @@
 import { Make as make } from '@rbxts/altmake'
 import { Builtin, type Handle } from '@rbxts/toucan'
 import collapsible, { type Collapsible } from './collapsible'
-import { Color, FontSize, Fonts, Icons, Padding } from './style'
+import { Color, FontSize, Fonts, IconIds, icon, Padding } from './style'
 
 const HEADER_HEIGHT = 25
 
+function getEntityIconId(entity: Handle): string {
+	return entity.has(Builtin.Component)
+		? IconIds.puzzle
+		: entity.has(Builtin.System)
+			? IconIds.cpu
+			: entity.has(Builtin.Plugin)
+				? IconIds.plug
+				: entity.has(Builtin.Schedule)
+					? IconIds.clock
+					: IconIds.box
+}
+
 function makeHeader(entity: Handle): Instance[] {
-	const entityIcon = entity.has(Builtin.Component) ? Icons.puzzle : Icons.box
+	const entityIconId = getEntityIconId(entity)
 
 	return [
 		make('UIPadding', {
@@ -23,7 +35,7 @@ function makeHeader(entity: Handle): Instance[] {
 			Padding: Padding.medium,
 		}),
 
-		entityIcon({ color: Color.contentMuted }),
+		icon(entityIconId, { color: Color.contentMuted }),
 
 		make('TextLabel', {
 			Name: 'id',
@@ -56,9 +68,12 @@ export default function entityEntry(
 	entity: Handle,
 	body: Instance[],
 ): Collapsible {
+	const isRoot = entity.parent() === undefined
+
 	return collapsible(makeHeader(entity), body, {
 		headerSize: new UDim2(1, 0, 0, HEADER_HEIGHT),
-		headerBackgroundColor: Color.surface2,
+		headerBackgroundColor: isRoot ? Color.surface2 : Color.surface3,
+		headerBorderColor: isRoot ? Color.border : Color.border,
 		bodyBackgroundColor: Color.surface1,
 	})
 }

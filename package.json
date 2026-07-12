@@ -36,6 +36,6 @@
 	"dependencies": {
 		"@rbxts/altmake": "^0.1.5",
 		"@rbxts/services": "^1.6.0",
-		"@rbxts/toucan": "0.5.2"
+		"@rbxts/toucan": "0.5.3"
 	}
 }

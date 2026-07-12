@@ -1,5 +1,5 @@
 import { Make as make } from '@rbxts/altmake'
-import { Color, Fonts, FontSize, Icons, Padding } from './style'
+import { Color, FontSize, Fonts, IconIds, icon, Padding } from './style'
 
 const TITLE_BAR_HEIGHT = 35
 
@@ -7,7 +7,7 @@ function makeTitleBar(title: string): {
 	root: ImageButton
 	chevron: ImageLabel
 } {
-	const chevron = Icons.chevronRightBold({
+	const chevron = icon(IconIds.chevronRightBold, {
 		scale: 0.7,
 		rotation: 90,
 		// We have to manually move the icon to the right on the center because
