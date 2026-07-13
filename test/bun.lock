@@ -6,7 +6,7 @@
       "name": "test",
       "dependencies": {
         "@rbxts/altmake": "^0.1.5",
-        "@rbxts/toucan": "0.5.3",
+        "@rbxts/toucan": "0.5.5",
       },
       "devDependencies": {
         "@rbxts/compiler-types": "^3.0.0-types.0",
@@ -25,7 +25,7 @@
 
     "@rbxts/services": ["@rbxts/services@1.6.0", "", {}, "sha512-YH02E1/tGHeMXB0Mam8qPdAZa2fjQWdylEscSL4Zn0RIaQeByYImA2qUsXM3nBdhcyKHDwltzSznDKyCGfFEWA=="],
 
-    "@rbxts/toucan": ["@rbxts/toucan@0.5.3", "", { "dependencies": { "@rbxts/jecs": "^0.10.4", "@rbxts/services": "^1.6.0" } }, "sha512-dCNgk6bsQ6fnSE3+zNApra7roQU3mkx+ceh1SB7bRduqqgSitubABuUyI31DqCV4txmtDEWI+tSfwGNoBV1bog=="],
+    "@rbxts/toucan": ["@rbxts/toucan@0.5.5", "", { "dependencies": { "@rbxts/jecs": "^0.10.4", "@rbxts/services": "^1.6.0" } }, "sha512-eLYiYinn7qjj3ZcDnTT9U/Mx5J75VBJEAYeVG5PG9gPoEfjqJoKbDPhUu287ZVwmEALAaUUbw+5v7Ic70vGh8Q=="],
 
     "@rbxts/types": ["@rbxts/types@1.0.925", "", {}, "sha512-wUbRd/6m1NOGVw5sYKerRnSKj7Vbj0e+tZLQ3TsjMmA5uS2wl36Jzep66BYIpaKn8DvhMhLxntjFBd318S66bA=="],
 

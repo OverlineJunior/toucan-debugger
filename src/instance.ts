@@ -4,7 +4,8 @@ import {
 	component,
 	type EntityHandle,
 	entity,
-	pair,
+    pair,
+    Handle,
 } from '@rbxts/toucan'
 
 export const Frame = component<Frame>('Frame')
@@ -41,13 +42,13 @@ const RESERVED_PROPERTIES = ['child', 'children', 'callback']
 
 type SupportedInstances = typeof SUPPORTED_INSTANCES
 
-type RootData<I extends Instance> = [EntityHandle, I]
+type EntityInstance<I extends Instance = Instance> = [EntityHandle, I]
 
 type InstanceProperties<T extends Instance> = Partial<
 	WritableInstanceProperties<T>
 > & {
-    child?: RootData<Instance>
-	children?: RootData<Instance>[]
+    child?: EntityInstance | EntityHandle
+	children?: (EntityInstance | EntityHandle)[]
 	callback?: (entity: EntityHandle, instance: T) => void
 	// Typescript cannot infer every Instance has a Name property.
 	Name?: string
@@ -79,7 +80,7 @@ type InstanceProperties<T extends Instance> = Partial<
 export function entityFor<T extends keyof SupportedInstances>(
 	className: T,
 	properties?: InstanceProperties<CreatableInstances[T]>,
-): RootData<CreatableInstances[T]> {
+): EntityInstance<CreatableInstances[T]> {
 	const entt = entity(properties?.Name)
 	const inst = new Instance(className)
 
@@ -93,14 +94,18 @@ export function entityFor<T extends keyof SupportedInstances>(
 		;(inst as unknown as Record<string, unknown>)[k as string] = v
     }
 
-    
     const children = properties?.children ?? []
     if (properties?.child !== undefined) {
         children.push(properties.child)
     }
-	children.forEach(([childEntt, childInst]) => {
-		childEntt.set(pair(Builtin.ChildOf, entt))
-		childInst.Parent = inst
+    children.forEach((child) => {
+        if (child instanceof Handle) {
+            child.set(pair(Builtin.ChildOf, entt))
+        } else {
+            const [entt, inst] = child
+            entt.set(pair(Builtin.ChildOf, entt))
+            inst.Parent = inst
+        }
 	})
 
 	properties?.callback?.(entt, inst)
