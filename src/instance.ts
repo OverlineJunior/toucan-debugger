@@ -42,7 +42,7 @@ const RESERVED_PROPERTIES = ['child', 'children', 'callback']
 
 type SupportedInstances = typeof SUPPORTED_INSTANCES
 
-type EntityInstance<I extends Instance = Instance> = [EntityHandle, I]
+export type EntityInstance<I extends Instance = Instance> = [EntityHandle, I]
 
 type InstanceProperties<T extends Instance> = Partial<
 	WritableInstanceProperties<T>
@@ -102,9 +102,9 @@ export function entityFor<T extends keyof SupportedInstances>(
         if (child instanceof Handle) {
             child.set(pair(Builtin.ChildOf, entt))
         } else {
-            const [entt, inst] = child
-            entt.set(pair(Builtin.ChildOf, entt))
-            inst.Parent = inst
+            const [childEntt, childInst] = child
+            childEntt.set(pair(Builtin.ChildOf, entt))
+            childInst.Parent = inst
         }
 	})
 

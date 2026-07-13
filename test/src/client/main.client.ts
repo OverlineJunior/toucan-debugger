@@ -1,5 +1,5 @@
 import { Builtin, entity, pair, scheduler } from '@rbxts/toucan'
-import toucanDebugger from '@rbxts/toucan-debugger'
+import toucanDebugger, { themes } from '@rbxts/toucan-debugger'
 
 entity('moon').set(
 	pair(
@@ -8,4 +8,4 @@ entity('moon').set(
 	),
 )
 
-scheduler().usePlugin(toucanDebugger).run()
+scheduler().usePlugin(toucanDebugger, themes.black).run()
