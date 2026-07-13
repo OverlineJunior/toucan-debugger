@@ -1,8 +1,9 @@
 import { Players, RunService } from '@rbxts/services'
 import type { Scheduler } from '@rbxts/toucan'
 import explorerPanel from './ui2'
-import { Theme } from './themes'
+import type { Theme } from './themes'
 import drawEntityEntries from './drawEntities2'
+import { updateCollapsible } from './collapsible'
 
 export { themes, type Theme } from './themes'
 
@@ -19,5 +20,8 @@ export default function toucanDebugger(scheduler: Scheduler, theme: Theme) {
 	const playerGui = client.WaitForChild('PlayerGui')
 
     scheduler.useSystem('preStartup', setupDebuggerPanel, { args: [playerGui, theme] })
-    scheduler.useSystem('last', drawEntityEntries, { args: [theme] })
+    scheduler.useSystemChain('last', [
+        [drawEntityEntries, { args: [theme] }],
+        [updateCollapsible, { args: [theme] }],
+    ])
 }

@@ -21,6 +21,7 @@ export const UISizeConstraint = component<UISizeConstraint>('UISizeConstraint')
 export const UIAspectRatioConstraint = component<UIAspectRatioConstraint>(
 	'UIAspectRatioConstraint',
 )
+export const UICorner = component<UICorner>('UICorner')
 
 const SUPPORTED_INSTANCES = {
 	Frame,
@@ -34,6 +35,7 @@ const SUPPORTED_INSTANCES = {
 	UIFlexItem,
 	UISizeConstraint,
 	UIAspectRatioConstraint,
+	UICorner,
 } satisfies {
 	[K in keyof CreatableInstances]?: ComponentHandle<CreatableInstances[K]>
 }
@@ -63,7 +65,7 @@ type InstanceProperties<T extends Instance> = Partial<
  * Not every instance is supported, as there needs to be a corresponding component for it. If there's an instance you need that isn't supported, consider contributing.
  *
  * @example
- * let textLabel: TextLabel | undefined
+ * let textLabel: TextLabel
  *
  * const [btnEntt, btnInst] = entityFor('ImageButton', {
  *     Size: new UDim2(0, 100, 0, 40),
@@ -79,7 +81,7 @@ type InstanceProperties<T extends Instance> = Partial<
  */
 export function entityFor<T extends keyof SupportedInstances>(
 	className: T,
-	properties?: InstanceProperties<CreatableInstances[T]>,
+	properties: InstanceProperties<CreatableInstances[T]> = {},
 ): EntityInstance<CreatableInstances[T]> {
 	const entt = entity(properties?.Name)
 	const inst = new Instance(className)

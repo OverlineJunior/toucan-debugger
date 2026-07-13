@@ -39,9 +39,9 @@ const blackTheme: Theme = {
         huge: 36,
     },
     paddingSizes: {
-        small: new UDim(undefined, 5),
-        medium: new UDim(undefined, 10),
-        large: new UDim(undefined, 15),
+        small: new UDim(undefined, 3),
+        medium: new UDim(undefined, 6),
+        large: new UDim(undefined, 9),
     },
 }
 
