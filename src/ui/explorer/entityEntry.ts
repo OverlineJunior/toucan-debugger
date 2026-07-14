@@ -1,4 +1,4 @@
-import { component, type EntityHandle, pair, type Handle, Builtin } from '@rbxts/toucan'
+import { component, type EntityHandle, pair, type Handle } from '@rbxts/toucan'
 import { type EntityInstance, entityFor } from '../../instance'
 import type { Theme } from '../../themes'
 import { Collapsible } from '../../collapsible'
@@ -19,7 +19,6 @@ function makeHeader(
         Name: 'header',
         Size: new UDim2(1, 0, 0, HEADER_HEIGHT),
         BackgroundColor3: theme.colors.surface2,
-        BorderColor3: theme.colors.border,
         LayoutOrder: 0,
 
         children: [
@@ -38,6 +37,10 @@ function makeHeader(
 
             entityFor('UICorner', {
                 CornerRadius: theme.paddingSizes.medium,
+            }),
+
+            entityFor('UIStroke', {
+                Color: theme.colors.border,
             }),
             
             entityFor('Frame', {

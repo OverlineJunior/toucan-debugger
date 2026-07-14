@@ -22,6 +22,7 @@ export const UIAspectRatioConstraint = component<UIAspectRatioConstraint>(
 	'UIAspectRatioConstraint',
 )
 export const UICorner = component<UICorner>('UICorner')
+export const UIStroke = component<UIStroke>('UIStroke')
 
 const SUPPORTED_INSTANCES = {
 	Frame,
@@ -36,6 +37,7 @@ const SUPPORTED_INSTANCES = {
 	UISizeConstraint,
 	UIAspectRatioConstraint,
 	UICorner,
+	UIStroke,
 } satisfies {
 	[K in keyof CreatableInstances]?: ComponentHandle<CreatableInstances[K]>
 }
