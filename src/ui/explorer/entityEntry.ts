@@ -1,4 +1,4 @@
-import { component, type EntityHandle, pair, type Handle } from '@rbxts/toucan'
+import { component, type EntityHandle, pair, type Handle, Builtin } from '@rbxts/toucan'
 import { type EntityInstance, entityFor } from '../../instance'
 import type { Theme } from '../../themes'
 import { Collapsible } from '../../collapsible'
@@ -7,6 +7,14 @@ const HEADER_HEIGHT = 20
 
 export const EntryFor = component('EntryFor')
 export const NoEntry = component('NoEntry')
+
+function getEntityIcon(entity: Handle, theme: Theme): string {
+    if (entity.has(Builtin.Component)) return theme.icons.component
+    if (entity.has(Builtin.System)) return theme.icons.system
+    if (entity.has(Builtin.Schedule)) return theme.icons.schedule
+    if (entity.has(Builtin.Plugin)) return theme.icons.plugin
+    return theme.icons.entity
+}
 
 function makeHeader(
     entity: Handle,
@@ -61,7 +69,7 @@ function makeHeader(
 
                     entityFor('ImageLabel', {
                         Name: 'icon',
-                        Image: theme.icons.entity,
+                        Image: getEntityIcon(entity, theme),
                         ImageColor3: theme.colors.contentMuted,
                         Size: UDim2.fromScale(0, 1),
                         BackgroundTransparency: 1,
