@@ -1,29 +1,29 @@
-import { Make as make } from '@rbxts/altmake'
-import { Color, FontSize, Fonts, Padding, ROBLOX_TOPBAR_HEIGHT } from './style'
+import { entityFor, type EntityInstance } from '../instance'
+import { ROBLOX_TOPBAR_HEIGHT, type Theme } from '../themes'
 
-export default function hero(): Frame {
-	return make('Frame', {
-		Name: 'titleBar',
+export default function hero(theme: Theme): EntityInstance<Frame> {
+	return entityFor('Frame', {
+		Name: 'hero',
 		Size: new UDim2(1, 0, 0, ROBLOX_TOPBAR_HEIGHT),
 		BackgroundTransparency: 1,
 		LayoutOrder: 0,
 
-		Children: [
-			make('UIPadding', {
-				PaddingRight: Padding.small,
-			}),
+		children: [
+		    entityFor('UIPadding', {
+		        PaddingRight: theme.paddingSizes.medium,
+		    }),
 
-			make('TextLabel', {
-				Name: 'title',
-				Text: 'Toucan',
-				FontFace: Fonts.black,
-				Size: new UDim2(1, 0, 1, 0),
-				TextXAlignment: Enum.TextXAlignment.Right,
-				TextYAlignment: Enum.TextYAlignment.Bottom,
-				TextColor3: Color.contentInverse,
-				TextSize: FontSize.huge,
-				BackgroundTransparency: 1,
-			}),
+            entityFor('TextLabel', {
+                Name: 'title',
+                Text: 'Toucan',
+                FontFace: theme.fonts.black,
+                Size: new UDim2(1, 0, 1, 0),
+                TextXAlignment: Enum.TextXAlignment.Right,
+                TextYAlignment: Enum.TextYAlignment.Bottom,
+                TextColor3: theme.colors.contentInverse,
+                TextSize: theme.fontSizes.huge,
+                BackgroundTransparency: 1,
+            })
 		],
 	})
 }

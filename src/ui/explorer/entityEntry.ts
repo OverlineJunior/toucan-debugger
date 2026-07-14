@@ -125,10 +125,8 @@ function makeHeader(
 
 export default function entityEntry(
     entity: Handle,
-    parentEntt: Handle,
-    parentInst: Instance,
     theme: Theme,
-): EntityInstance<Frame> {
+): [EntityInstance<Frame>, Frame] {
     let header: GuiButton
     let chevron: ImageLabel
     let body: Frame
@@ -139,16 +137,13 @@ export default function entityEntry(
         AutomaticSize: Enum.AutomaticSize.Y,
         Transparency: 1,
 
-        callback: (e, inst) => {
-            e.set(pair(Builtin.ChildOf, parentEntt as EntityHandle))
-            e.set(pair(EntryFor, entity as EntityHandle))
-            inst.Parent = parentInst
-        },
+        callback: (e) => e.set(pair(EntryFor, entity as EntityHandle)),
 
         children: [
             entityFor('UIListLayout', {
                 FillDirection: Enum.FillDirection.Vertical,
                 SortOrder: Enum.SortOrder.LayoutOrder,
+                Padding: theme.paddingSizes.medium,
             }),
 
             makeHeader(entity, theme, (hdr, chv) => {
@@ -167,9 +162,18 @@ export default function entityEntry(
                     body = inst
                 },
 
-                child: entityFor('Frame', {
-                    Size: UDim2.fromOffset(20, 20),
-                }),
+                children: [
+                    entityFor('UIListLayout', {
+                        FillDirection: Enum.FillDirection.Vertical,
+                        HorizontalFlex: Enum.UIFlexAlignment.Fill,
+                        SortOrder: Enum.SortOrder.LayoutOrder,
+                        Padding: theme.paddingSizes.medium,
+                    }),
+
+                    entityFor('UIPadding', {
+                        PaddingLeft: new UDim(0, theme.explorerIndent),
+                    }),
+                ],
             })
         ],
     })
@@ -187,5 +191,5 @@ export default function entityEntry(
     }
     addNoEntryRecursive(entry[0])
 
-    return entry
+    return [entry, body!]
 }

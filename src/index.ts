@@ -1,8 +1,8 @@
 import { Players, RunService } from '@rbxts/services'
 import type { Scheduler } from '@rbxts/toucan'
-import explorerPanel from './ui2'
+import explorerPanel from './ui'
 import type { Theme } from './themes'
-import drawEntityEntries from './drawEntities2'
+import drawEntityEntries from './drawEntities'
 import { updateCollapsible } from './collapsible'
 
 export { themes, type Theme } from './themes'

@@ -42,7 +42,8 @@ export interface Theme {
         small: UDim
         medium: UDim
         large: UDim
-    }
+    },
+    explorerIndent: number,
 }
 
 export const themes = {

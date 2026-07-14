@@ -1,70 +1,38 @@
-import { Make as make } from '@rbxts/altmake'
-import { Color } from './style'
-import accordion from './accordion'
-import hero from './hero'
+import { entityFor } from '../instance'
+import type { Theme } from '../themes'
+import explorer from './explorer'
 import footer from './footer'
-import { component, InferValue } from '@rbxts/toucan'
+import hero from './hero'
 
-export const DebuggerPanel = component<{
-	screen: ScreenGui
-	entityContents: ScrollingFrame
-}>('DebuggerPanel')
-
-function makeContent(children: GuiObject[]): Frame {
-	return make('Frame', {
-		Name: 'content',
-		Size: new UDim2(1, 0, 1, -35),
-		Transparency: 1,
-		LayoutOrder: 1,
-
-		Children: [
-			make('UIFlexItem', {
-				FlexMode: Enum.UIFlexMode.Fill,
-			}),
-
-			make('UIListLayout', {
-				HorizontalFlex: Enum.UIFlexAlignment.Fill,
-				SortOrder: Enum.SortOrder.LayoutOrder,
-			}),
-
-			...children,
-		],
-	})
-}
-
-export default function debuggerPanel(parent: Instance): InferValue<typeof DebuggerPanel> {
-	const entities = accordion('Entities')
-
-	const screen = make('ScreenGui', {
-		Name: 'toucanDebugger',
+export default function explorerPanel(parent: Instance, theme: Theme) {
+	entityFor('ScreenGui', {
+		Name: 'toucanExplorer',
 		Parent: parent,
 		IgnoreGuiInset: true,
 
-		Children: [
-			make('Frame', {
+		children: [
+			entityFor('Frame', {
 				Name: 'panel',
 				Position: UDim2.fromScale(0, 0),
 				Size: new UDim2(0, 300, 1, 0),
-				BackgroundColor3: Color.surface2,
-				BorderColor3: Color.border,
+				BackgroundColor3: theme.colors.surface2,
+				BorderColor3: theme.colors.border,
 				BackgroundTransparency: 0.15,
 
-				Children: [
-					make('UIListLayout', {
+				children: [
+					entityFor('UIListLayout', {
 						FillDirection: Enum.FillDirection.Vertical,
 						HorizontalFlex: Enum.UIFlexAlignment.Fill,
 						SortOrder: Enum.SortOrder.LayoutOrder,
 					}),
 
-					hero(),
+                    hero(theme),
 
-					makeContent([entities.root, accordion('Scheduler').root]),
+                    explorer(theme),
 
-					footer(),
+                    footer(theme),
 				],
 			}),
 		],
 	})
-
-	return { screen, entityContents: entities.contents }
 }

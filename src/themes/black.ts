@@ -43,6 +43,7 @@ const blackTheme: Theme = {
         medium: new UDim(undefined, 6),
         large: new UDim(undefined, 9),
     },
+    explorerIndent: 20,
 }
 
 export default blackTheme
