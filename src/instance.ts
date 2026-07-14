@@ -48,11 +48,13 @@ type SupportedInstances = typeof SUPPORTED_INSTANCES
 
 export type EntityInstance<I extends Instance = Instance> = [EntityHandle, I]
 
+type Child = EntityInstance | EntityHandle | false | undefined
+
 type InstanceProperties<T extends Instance> = Partial<
 	WritableInstanceProperties<T>
 > & {
-    child?: EntityInstance | EntityHandle
-	children?: (EntityInstance | EntityHandle)[]
+    child?: Child
+	children?: Child[]
 	callback?: (entity: EntityHandle, instance: T) => void
 	// Typescript cannot infer every Instance has a Name property.
 	Name?: string
@@ -98,19 +100,23 @@ export function entityFor<T extends keyof SupportedInstances>(
 		;(inst as unknown as Record<string, unknown>)[k as string] = v
     }
 
-    const children = properties?.children ?? []
-    if (properties?.child !== undefined) {
-        children.push(properties.child)
+    const parentChild = (child: Child, entt: EntityHandle, inst: Instance) => {
+    	if (!child) return
+        
+    	if (child instanceof Handle) {
+    		child.set(pair(Builtin.ChildOf, entt))
+    	} else {
+    		const [childEntt, childInst] = child
+    		childEntt.set(pair(Builtin.ChildOf, entt))
+    		childInst.Parent = inst
+    	}
     }
-    children.forEach((child) => {
-        if (child instanceof Handle) {
-            child.set(pair(Builtin.ChildOf, entt))
-        } else {
-            const [childEntt, childInst] = child
-            childEntt.set(pair(Builtin.ChildOf, entt))
-            childInst.Parent = inst
-        }
-	})
+
+    parentChild(properties?.child, entt, inst)
+
+    for (const child of properties?.children ?? []) {
+        parentChild(child, entt, inst)
+    }
 
 	properties?.callback?.(entt, inst)
 
