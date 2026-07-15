@@ -114,7 +114,7 @@ function makeHeader(
                         TextSize: theme.fontSizes.tiny,
                         TextXAlignment: Enum.TextXAlignment.Left,
                         TextYAlignment: Enum.TextYAlignment.Bottom,
-                        TextColor3: theme.colors.server,
+                        TextColor3: theme.colors.contentMuted,
                         Size: new UDim2(0, 35, 1, 0),
                         BackgroundTransparency: 1,
                         LayoutOrder: 3,
