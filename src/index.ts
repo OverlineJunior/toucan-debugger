@@ -4,6 +4,7 @@ import explorerPanel from './ui'
 import type { Theme } from './themes'
 import drawEntityEntries from './drawEntities'
 import { updateCollapsible } from './collapsible'
+import { updateRuntimeLabel } from './updateRuntimeLabel'
 
 export { themes, type Theme } from './themes'
 
@@ -23,5 +24,6 @@ export default function toucanDebugger(scheduler: Scheduler, theme: Theme) {
     scheduler.useSystemChain('last', [
         [drawEntityEntries, { args: [theme] }],
         [updateCollapsible, { args: [theme] }],
+        updateRuntimeLabel,
     ])
 }

@@ -2,6 +2,7 @@ import { component, type EntityHandle, pair, type Handle, Builtin } from '@rbxts
 import { type EntityInstance, entityFor } from '../../instance'
 import type { Theme } from '../../themes'
 import { Collapsible } from '../../collapsible'
+import { RuntimeLabelFor } from '../../updateRuntimeLabel'
 
 const HEADER_HEIGHT = 20
 
@@ -100,14 +101,26 @@ function makeHeader(
                         TextSize: theme.fontSizes.small,
                         TextXAlignment: Enum.TextXAlignment.Left,
                         TextColor3: theme.colors.content,
-                        Size: UDim2.fromScale(0, 1),
+                        Size: new UDim2(0, 40, 1, 0),
+                        AutomaticSize: Enum.AutomaticSize.X,
                         BackgroundTransparency: 1,
                         LayoutOrder: 2,
-
-                        child: entityFor('UIFlexItem', {
-                           FlexMode: Enum.UIFlexMode.Fill, 
-                        }),
                     }),
+
+                    entity.has(Builtin.System) && entityFor('TextLabel', {
+                        Name: 'runtime',
+                        Text: '?',
+                        FontFace: theme.fonts.extraLightItalic,
+                        TextSize: theme.fontSizes.tiny,
+                        TextXAlignment: Enum.TextXAlignment.Left,
+                        TextYAlignment: Enum.TextYAlignment.Bottom,
+                        TextColor3: theme.colors.server,
+                        Size: new UDim2(0, 35, 1, 0),
+                        BackgroundTransparency: 1,
+                        LayoutOrder: 3,
+
+                        callback: (e) => e.set(pair(RuntimeLabelFor, entity as EntityHandle)),
+                    })
                 ],
             }),
 

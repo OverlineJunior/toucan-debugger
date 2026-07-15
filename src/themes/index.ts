@@ -34,6 +34,7 @@ export interface Theme {
         extraLightItalic: Font
     }
     fontSizes: {
+        tiny: number
         small: number
         large: number
         huge: number

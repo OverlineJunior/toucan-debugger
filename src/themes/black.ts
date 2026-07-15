@@ -34,6 +34,7 @@ const blackTheme: Theme = {
         extraLightItalic: new Font(FONT_INTER, Enum.FontWeight.ExtraLight, Enum.FontStyle.Italic),
     },
     fontSizes: {
+        tiny: 10,
         small: 12,
         large: 16,
         huge: 36,
