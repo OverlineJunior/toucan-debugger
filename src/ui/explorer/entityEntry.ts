@@ -6,7 +6,6 @@ import { RuntimeLabelFor } from '../../updateRuntimeLabel'
 
 const HEADER_HEIGHT = 20
 
-export const EntryFor = component('EntryFor')
 export const NoEntry = component('NoEntry')
 
 function getEntityIcon(entity: Handle, theme: Theme): string {
@@ -160,8 +159,6 @@ export default function entityEntry(
         Size: UDim2.fromScale(0, 0),
         AutomaticSize: Enum.AutomaticSize.Y,
         Transparency: 1,
-
-        callback: (e) => e.set(pair(EntryFor, entity as EntityHandle)),
 
         children: [
             entityFor('UIListLayout', {

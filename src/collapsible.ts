@@ -14,6 +14,7 @@ export function updateCollapsible(theme: Theme) {
     query(Collapsible).forEach((e, { toggleButton, chevron, body }) => {
         const hasContent = body.GetChildren().some((c) => c.IsA('GuiObject'))
         chevron.Visible = hasContent
+        body.Visible = hasContent ? body.Visible : false
 
         if (!e.has(Done)) {
             // Start closed.
