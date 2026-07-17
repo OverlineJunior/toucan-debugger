@@ -87,7 +87,7 @@ export function entityFor<T extends keyof SupportedInstances>(
 	className: T,
 	properties: InstanceProperties<CreatableInstances[T]> = {},
 ): EntityInstance<CreatableInstances[T]> {
-	const entt = entity(properties?.Name)
+	const entt = entity(properties?.Name ?? className)
 	const inst = new Instance(className)
 
 	entt.set(
