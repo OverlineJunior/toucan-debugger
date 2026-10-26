@@ -8,6 +8,8 @@ It is currently very early in development and cannot observe the server. It can 
 - Display `ChildOf` hierarchies;
 - Measure system runtimes (they're under schedules).
 
+<img src="assets/showcase.png" style="vertical-align: bottom;"/>
+
 ## Installation
 
 ```sh
