@@ -15,11 +15,6 @@ function setupDebuggerPanel(parent: Instance, theme: Theme) {
 /**
  * Spawns a visual debugger.
  *
- * It is currently very early in development and cannot observe the server.
- * It can however...
- * - List every entity-like along its id and type icon;
- * - Measure system runtimes (they're under schedules).
- *
  * @remarks
  * Throws if used on the server.
  *
