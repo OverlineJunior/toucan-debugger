@@ -2,7 +2,7 @@ import { Players, RunService } from '@rbxts/services'
 import type { Scheduler } from '@rbxts/toucan'
 import { updateCollapsible } from './collapsible'
 import { bindEntityEntryCleanup, drawEntityEntries } from './drawEntityEntries'
-import type { Theme } from './themes'
+import { type Theme, themes } from './themes'
 import explorerPanel from './ui'
 import { updateRuntimeLabel } from './updateRuntimeLabel'
 
@@ -12,7 +12,29 @@ function setupDebuggerPanel(parent: Instance, theme: Theme) {
 	explorerPanel(parent, theme)
 }
 
-export default function toucanDebugger(scheduler: Scheduler, theme: Theme) {
+/**
+ * Spawns a visual debugger.
+ *
+ * It is currently very early in development and cannot observe the server.
+ * It can however...
+ * - List every entity-like along its id and type icon;
+ * - Measure system runtimes (they're under schedules).
+ *
+ * @remarks
+ * Throws if used on the server.
+ *
+ * @example
+ * ```ts
+ * import toucanDebugger, { themes } from '@rbxts/toucan-debugger'
+ *
+ * // Passing a theme is optional — defaults to black.
+ * scheduler().usePlugin(toucanDebugger, themes.black).run()
+ * ```
+ */
+export default function toucanDebugger(
+	scheduler: Scheduler,
+	theme = themes.black,
+) {
 	if (RunService.IsServer()) {
 		error("Toucan's debugger can only be used on the client")
 	}
