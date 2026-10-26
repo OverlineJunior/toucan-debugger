@@ -18,4 +18,4 @@ entity('frank')
 
 createTestUi()
 
-scheduler().usePlugin(toucanDebugger, themes.black).run()
+scheduler().usePlugin(toucanDebugger, themes.white).run()
