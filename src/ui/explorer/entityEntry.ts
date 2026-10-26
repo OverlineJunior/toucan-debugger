@@ -1,216 +1,223 @@
-import { component, type EntityHandle, pair, type Handle, Builtin } from '@rbxts/toucan'
+import {
+	Builtin,
+	component,
+	type Entity,
+	type EntityLike,
+	pair,
+} from '@rbxts/toucan'
+import { Collapsible } from '../../collapsible'
 import { type EntityInstance, entityFor } from '../../instance'
 import type { Theme } from '../../themes'
-import { Collapsible } from '../../collapsible'
 import { RuntimeLabelFor } from '../../updateRuntimeLabel'
 
 const HEADER_HEIGHT = 20
 
 export const NoEntry = component('NoEntry')
 
-function getEntityIcon(entity: Handle, theme: Theme): string {
-    if (entity.has(Builtin.Component)) return theme.icons.component
-    if (entity.has(Builtin.System)) return theme.icons.system
-    if (entity.has(Builtin.Schedule)) return theme.icons.schedule
-    if (entity.has(Builtin.Plugin)) return theme.icons.plugin
-    return theme.icons.entity
+function getEntityIcon(entity: EntityLike, theme: Theme): string {
+	if (entity.has(Builtin.Component)) return theme.icons.component
+	if (entity.has(Builtin.System)) return theme.icons.system
+	if (entity.has(Builtin.Schedule)) return theme.icons.schedule
+	if (entity.has(Builtin.Plugin)) return theme.icons.plugin
+	return theme.icons.entity
 }
 
 function makeHeader(
-    entity: Handle,
-    theme: Theme,
-    callback: (header: ImageButton, chevron: ImageLabel) => void,
+	entity: EntityLike,
+	theme: Theme,
+	callback: (header: ImageButton, chevron: ImageLabel) => void,
 ): EntityInstance<ImageButton> {
-    let chevron: ImageLabel
-    
-    const header = entityFor('ImageButton', {
-        Name: 'header',
-        Size: new UDim2(1, 0, 0, HEADER_HEIGHT),
-        BackgroundColor3: theme.colors.surface2,
-        LayoutOrder: 0,
+	let chevron: ImageLabel
 
-        children: [
-            entityFor('UIListLayout', {
-                FillDirection: Enum.FillDirection.Horizontal,
-                SortOrder: Enum.SortOrder.LayoutOrder,
-                Padding: theme.paddingSizes.medium,
-            }),
-            
-            entityFor('UIPadding', {
-                PaddingBottom: theme.paddingSizes.small,
-                PaddingTop: theme.paddingSizes.small,
-                PaddingLeft: theme.paddingSizes.small,
-                PaddingRight: theme.paddingSizes.small,
-            }),
+	const header = entityFor('ImageButton', {
+		Name: 'header',
+		Size: new UDim2(1, 0, 0, HEADER_HEIGHT),
+		BackgroundColor3: theme.colors.surface2,
+		LayoutOrder: 0,
 
-            entityFor('UICorner', {
-                CornerRadius: theme.paddingSizes.medium,
-            }),
+		children: [
+			entityFor('UIListLayout', {
+				FillDirection: Enum.FillDirection.Horizontal,
+				SortOrder: Enum.SortOrder.LayoutOrder,
+				Padding: theme.paddingSizes.medium,
+			}),
 
-            entityFor('UIStroke', {
-                Color: theme.colors.border,
-            }),
-            
-            entityFor('Frame', {
-                Name: 'left',
-                Size: UDim2.fromScale(0, 1),
-                BackgroundTransparency: 1,
+			entityFor('UIPadding', {
+				PaddingBottom: theme.paddingSizes.small,
+				PaddingTop: theme.paddingSizes.small,
+				PaddingLeft: theme.paddingSizes.small,
+				PaddingRight: theme.paddingSizes.small,
+			}),
 
-                children: [
-                    entityFor('UIListLayout', {
-                        FillDirection: Enum.FillDirection.Horizontal,
-                        SortOrder: Enum.SortOrder.LayoutOrder,
-                        Padding: theme.paddingSizes.medium,
-                    }),
+			entityFor('UICorner', {
+				CornerRadius: theme.paddingSizes.medium,
+			}),
 
-                    entityFor('UIFlexItem', {
-                        FlexMode: Enum.UIFlexMode.Fill,
-                    }),
+			entityFor('UIStroke', {
+				Color: theme.colors.border,
+			}),
 
-                    entityFor('ImageLabel', {
-                        Name: 'icon',
-                        Image: getEntityIcon(entity, theme),
-                        ImageColor3: theme.colors.contentMuted,
-                        Size: UDim2.fromScale(0, 1),
-                        BackgroundTransparency: 1,
-                        LayoutOrder: 0,
+			entityFor('Frame', {
+				Name: 'left',
+				Size: UDim2.fromScale(0, 1),
+				BackgroundTransparency: 1,
 
-                        child: entityFor('UIAspectRatioConstraint', {
-                            AspectType: Enum.AspectType.ScaleWithParentSize,
-                            DominantAxis: Enum.DominantAxis.Height,
-                        }),
-                    }),
+				children: [
+					entityFor('UIListLayout', {
+						FillDirection: Enum.FillDirection.Horizontal,
+						SortOrder: Enum.SortOrder.LayoutOrder,
+						Padding: theme.paddingSizes.medium,
+					}),
 
-                    entityFor('TextLabel', {
-                        Name: 'id',
-                        Text: `#${entity.id}`,
-                        FontFace: theme.fonts.regular,
-                        TextSize: theme.fontSizes.small,
-                        TextXAlignment: Enum.TextXAlignment.Left,
-                        TextColor3: theme.colors.contentMuted,
-                        Size: new UDim2(0, 33.5, 1, 0),
-                        BackgroundTransparency: 1,
-                        LayoutOrder: 1,
-                    }),
-                    
-                    entityFor('TextLabel', {
-                        Name: 'label',
-                        Text: entity.toString(),
-                        FontFace: theme.fonts.regular,
-                        TextSize: theme.fontSizes.small,
-                        TextXAlignment: Enum.TextXAlignment.Left,
-                        TextColor3: theme.colors.content,
-                        Size: new UDim2(0, 40, 1, 0),
-                        AutomaticSize: Enum.AutomaticSize.X,
-                        BackgroundTransparency: 1,
-                        LayoutOrder: 2,
-                    }),
+					entityFor('UIFlexItem', {
+						FlexMode: Enum.UIFlexMode.Fill,
+					}),
 
-                    entity.has(Builtin.System) && entityFor('TextLabel', {
-                        Name: 'runtime',
-                        Text: '?',
-                        FontFace: theme.fonts.extraLightItalic,
-                        TextSize: theme.fontSizes.tiny,
-                        TextXAlignment: Enum.TextXAlignment.Left,
-                        TextYAlignment: Enum.TextYAlignment.Bottom,
-                        TextColor3: theme.colors.contentMuted,
-                        Size: new UDim2(0, 35, 1, 0),
-                        BackgroundTransparency: 1,
-                        LayoutOrder: 3,
+					entityFor('ImageLabel', {
+						Name: 'icon',
+						Image: getEntityIcon(entity, theme),
+						ImageColor3: theme.colors.contentMuted,
+						Size: UDim2.fromScale(0, 1),
+						BackgroundTransparency: 1,
+						LayoutOrder: 0,
 
-                        callback: (e) => e.set(pair(RuntimeLabelFor, entity as EntityHandle)),
-                    })
-                ],
-            }),
+						child: entityFor('UIAspectRatioConstraint', {
+							AspectType: Enum.AspectType.ScaleWithParentSize,
+							DominantAxis: Enum.DominantAxis.Height,
+						}),
+					}),
 
-            entityFor('ImageLabel', {
-                Name: 'chevron',
-                Size: UDim2.fromScale(0, 1),
-                Position: UDim2.fromScale(0.8, 0),
-                BackgroundTransparency: 1,
-                Image: theme.icons.chevronRight,
+					entityFor('TextLabel', {
+						Name: 'id',
+						Text: `#${entity.id}`,
+						FontFace: theme.fonts.regular,
+						TextSize: theme.fontSizes.small,
+						TextXAlignment: Enum.TextXAlignment.Left,
+						TextColor3: theme.colors.contentMuted,
+						Size: new UDim2(0, 33.5, 1, 0),
+						BackgroundTransparency: 1,
+						LayoutOrder: 1,
+					}),
 
-                callback: (_e, inst) => {
-                    chevron = inst
-                },
+					entityFor('TextLabel', {
+						Name: 'label',
+						Text: entity.toString(),
+						FontFace: theme.fonts.regular,
+						TextSize: theme.fontSizes.small,
+						TextXAlignment: Enum.TextXAlignment.Left,
+						TextColor3: theme.colors.content,
+						Size: new UDim2(0, 40, 1, 0),
+						AutomaticSize: Enum.AutomaticSize.X,
+						BackgroundTransparency: 1,
+						LayoutOrder: 2,
+					}),
 
-                child: entityFor('UIAspectRatioConstraint', {
-                    AspectType: Enum.AspectType.ScaleWithParentSize,
-                    DominantAxis: Enum.DominantAxis.Height,
-                })
-            }),
-        ],
-    })
+					entity.has(Builtin.System) &&
+						entityFor('TextLabel', {
+							Name: 'runtime',
+							Text: '?',
+							FontFace: theme.fonts.extraLightItalic,
+							TextSize: theme.fontSizes.tiny,
+							TextXAlignment: Enum.TextXAlignment.Left,
+							TextYAlignment: Enum.TextYAlignment.Bottom,
+							TextColor3: theme.colors.contentMuted,
+							Size: new UDim2(0, 35, 1, 0),
+							BackgroundTransparency: 1,
+							LayoutOrder: 3,
 
-    callback(header[1], chevron!)
-    return header
+							callback: (e) => e.set(pair(RuntimeLabelFor, entity)),
+						}),
+				],
+			}),
+
+			entityFor('ImageLabel', {
+				Name: 'chevron',
+				Size: UDim2.fromScale(0, 1),
+				Position: UDim2.fromScale(0.8, 0),
+				BackgroundTransparency: 1,
+				Image: theme.icons.chevronRight,
+
+				callback: (_e, inst) => {
+					chevron = inst
+				},
+
+				child: entityFor('UIAspectRatioConstraint', {
+					AspectType: Enum.AspectType.ScaleWithParentSize,
+					DominantAxis: Enum.DominantAxis.Height,
+				}),
+			}),
+		],
+	})
+
+	callback(header[1], chevron!)
+	return header
 }
 
 export default function entityEntry(
-    entity: Handle,
-    theme: Theme,
+	entity: EntityLike,
+	theme: Theme,
 ): [EntityInstance<Frame>, Frame] {
-    let header: GuiButton
-    let chevron: ImageLabel
-    let body: Frame
-    
-    const entry = entityFor('Frame', {
-        Name: `entityEntry: ${entity}`,
-        Size: UDim2.fromScale(0, 0),
-        AutomaticSize: Enum.AutomaticSize.Y,
-        Transparency: 1,
+	let header: GuiButton
+	let chevron: ImageLabel
+	let body: Frame
 
-        children: [
-            entityFor('UIListLayout', {
-                FillDirection: Enum.FillDirection.Vertical,
-                SortOrder: Enum.SortOrder.LayoutOrder,
-                Padding: theme.paddingSizes.medium,
-            }),
+	const entry = entityFor('Frame', {
+		Name: `entityEntry: ${entity}`,
+		Size: UDim2.fromScale(0, 0),
+		AutomaticSize: Enum.AutomaticSize.Y,
+		Transparency: 1,
 
-            makeHeader(entity, theme, (hdr, chv) => {
-                header = hdr
-                chevron = chv
-            }),
+		children: [
+			entityFor('UIListLayout', {
+				FillDirection: Enum.FillDirection.Vertical,
+				SortOrder: Enum.SortOrder.LayoutOrder,
+				Padding: theme.paddingSizes.medium,
+			}),
 
-            entityFor('Frame', {
-                Name: 'body',
-                Size: UDim2.fromScale(1, 0),
-                AutomaticSize: Enum.AutomaticSize.Y,
-                Transparency: 1,
-                LayoutOrder: 1,
+			makeHeader(entity, theme, (hdr, chv) => {
+				header = hdr
+				chevron = chv
+			}),
 
-                callback: (_e, inst) => {
-                    body = inst
-                },
+			entityFor('Frame', {
+				Name: 'body',
+				Size: UDim2.fromScale(1, 0),
+				AutomaticSize: Enum.AutomaticSize.Y,
+				Transparency: 1,
+				LayoutOrder: 1,
 
-                children: [
-                    entityFor('UIListLayout', {
-                        FillDirection: Enum.FillDirection.Vertical,
-                        HorizontalFlex: Enum.UIFlexAlignment.Fill,
-                        SortOrder: Enum.SortOrder.LayoutOrder,
-                        Padding: theme.paddingSizes.medium,
-                    }),
+				callback: (_e, inst) => {
+					body = inst
+				},
 
-                    entityFor('UIPadding', {
-                        PaddingLeft: new UDim(0, theme.explorerIndent),
-                    }),
-                ],
-            })
-        ],
-    })
+				children: [
+					entityFor('UIListLayout', {
+						FillDirection: Enum.FillDirection.Vertical,
+						HorizontalFlex: Enum.UIFlexAlignment.Fill,
+						SortOrder: Enum.SortOrder.LayoutOrder,
+						Padding: theme.paddingSizes.medium,
+					}),
 
-    entry[0].set(Collapsible, {
-        toggleButton: header!,
-        chevron: chevron!,
-        body: body!,
-    })
+					entityFor('UIPadding', {
+						PaddingLeft: new UDim(0, theme.explorerIndent),
+					}),
+				],
+			}),
+		],
+	})
 
-    // Without this, `drawEntities` would add entries infinitely, crashing the game. 
-    const addNoEntryRecursive = (e: EntityHandle) => {
-        e.set(NoEntry)
-        e.children().forEach((c) => addNoEntryRecursive(c as EntityHandle))
-    }
-    addNoEntryRecursive(entry[0])
+	entry[0].set(Collapsible, {
+		toggleButton: header!,
+		chevron: chevron!,
+		body: body!,
+	})
 
-    return [entry, body!]
+	// Without this, `drawEntities` would add entries infinitely, crashing the game.
+	const addNoEntryRecursive = (e: Entity) => {
+		e.set(NoEntry)
+		e.children().forEach((c) => addNoEntryRecursive(c as Entity))
+	}
+	addNoEntryRecursive(entry[0])
+
+	return [entry, body!]
 }

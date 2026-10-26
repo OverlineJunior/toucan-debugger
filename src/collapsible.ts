@@ -11,25 +11,25 @@ export const Collapsible = component<{
 const Done = component('Done')
 
 export function updateCollapsible(theme: Theme) {
-    query(Collapsible).forEach((e, { toggleButton, chevron, body }) => {
-        const hasContent = body.GetChildren().some((c) => c.IsA('GuiObject'))
-        chevron.Visible = hasContent
-        body.Visible = hasContent ? body.Visible : false
+	query(Collapsible).forEach((e, { toggleButton, chevron, body }) => {
+		const hasContent = body.GetChildren().some((c) => c.IsA('GuiObject'))
+		chevron.Visible = hasContent
+		body.Visible = hasContent ? body.Visible : false
 
-        if (!e.has(Done)) {
-            // Start closed.
-            body.Visible = false
+		if (!e.has(Done)) {
+			// Start closed.
+			body.Visible = false
 
-            toggleButton.MouseButton1Click.Connect(() => {
-                if (!hasContent) return
+			toggleButton.MouseButton1Click.Connect(() => {
+				if (!hasContent) return
 
-                body.Visible = !body.Visible
-                chevron.Image = body.Visible
-                    ? theme.icons.chevronDown
-                    : theme.icons.chevronRight
-            })
+				body.Visible = !body.Visible
+				chevron.Image = body.Visible
+					? theme.icons.chevronDown
+					: theme.icons.chevronRight
+			})
 
-            e.set(Done)
-        }
-    })
+			e.set(Done)
+		}
+	})
 }

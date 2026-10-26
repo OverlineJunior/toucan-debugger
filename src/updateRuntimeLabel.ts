@@ -17,8 +17,8 @@ function formatRuntime(ms: number): string {
 }
 
 export function updateRuntimeLabel() {
-    const now = os.clock()
-    // TODO: use something like `useThrottle` once its plugin gets published.
+	const now = os.clock()
+	// TODO: use something like `useThrottle` once its plugin gets published.
 	if (now - lastRun < UPDATE_INTERVAL) return
 	lastRun = now
 
@@ -27,7 +27,6 @@ export function updateRuntimeLabel() {
 		.forEach((e, label) => {
 			const systemEntt = e.targetOf(RuntimeLabelFor)!
 			const system = systemEntt.get(Builtin.System)!
-			const ms = system.runtimeMs
 			label.Text = formatRuntime(system.runtimeMs)
 		})
 }

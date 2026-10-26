@@ -26,11 +26,11 @@ export default function explorerPanel(parent: Instance, theme: Theme) {
 						SortOrder: Enum.SortOrder.LayoutOrder,
 					}),
 
-                    hero(theme),
+					hero(theme),
 
-                    explorer(theme),
+					explorer(theme),
 
-                    footer(theme),
+					footer(theme),
 				],
 			}),
 		],

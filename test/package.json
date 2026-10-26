@@ -13,12 +13,11 @@
 	"type": "commonjs",
 	"devDependencies": {
 		"@rbxts/compiler-types": "^3.0.0-types.0",
-		"@rbxts/types": "^1.0.925",
+		"@rbxts/types": "^1.0.959",
 		"roblox-ts": "^3.0.0",
-		"typescript": "5"
+		"typescript": "^5.9.3"
 	},
 	"dependencies": {
-		"@rbxts/altmake": "^0.1.5",
-		"@rbxts/toucan": "0.5.8"
+		"@rbxts/toucan": "0.6.0"
 	}
 }

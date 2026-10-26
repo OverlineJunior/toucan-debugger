@@ -39,12 +39,12 @@ export function createTestUi(): void {
 		const label = box.Text
 		if (label === '') return
 		const result = query(Builtin.Label).find((_e, l) => l === label)
-		resultLabel.Text = result !== undefined
-			? `✓ Entity "${label}" exists`
-			: `✗ Entity "${label}" not found`
-		resultLabel.TextColor3 = result !== undefined
-			? new Color3(0, 1, 0.2)
-			: new Color3(1, 0.3, 0.3)
+		resultLabel.Text =
+			result !== undefined
+				? `✓ Entity "${label}" exists`
+				: `✗ Entity "${label}" not found`
+		resultLabel.TextColor3 =
+			result !== undefined ? new Color3(0, 1, 0.2) : new Color3(1, 0.3, 0.3)
 	})
 
 	const btn = new Instance('TextButton')

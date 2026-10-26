@@ -1,8 +1,8 @@
 import {
 	Builtin,
 	component,
-	type EntityHandle,
-	type Handle,
+	type Entity,
+	type EntityLike,
 	pair,
 	query,
 	type RawId,
@@ -16,18 +16,18 @@ export const EntryFor = component('EntryFor')
 
 const seen = new Set<RawId>()
 
-function canPlaceEntry(e: Handle): boolean {
+function canPlaceEntry(e: EntityLike): boolean {
 	return !e.has(NoEntry) && !seen.has(e.id)
 }
 
 export function drawEntityEntries(theme: Theme): void {
 	const placeEntriesDeep = (
-		e: Handle,
+		e: EntityLike,
 		[parentEntt, parentInst]: EntityInstance,
 	) => {
 		const [[entryEntt, entryInst], body] = entityEntry(e, theme)
-        entryEntt.set(pair(Builtin.ChildOf, parentEntt))
-		entryEntt.set(pair(EntryFor, e as EntityHandle))
+		entryEntt.set(pair(Builtin.ChildOf, parentEntt))
+		entryEntt.set(pair(EntryFor, e))
 		entryInst.Parent = parentInst
 		seen.add(e.id)
 
@@ -40,17 +40,24 @@ export function drawEntityEntries(theme: Theme): void {
 		.with(EntityList)
 		.collect()[0]
 
-	query(Builtin.Wildcard)
-		.filter((e) => canPlaceEntry(e) && e.parent() === undefined)
-		.forEach((e) =>
-			placeEntriesDeep(e, [containerEntt as EntityHandle, containerInst]),
-		)
+	const enttKinds = [Builtin.Entity, Builtin.Component, Builtin.Resource]
+	enttKinds.forEach((enttKind) => {
+		query(enttKind)
+			.filter((e) => canPlaceEntry(e) && e.parent() === undefined)
+			.forEach((e) =>
+				placeEntriesDeep(e, [containerEntt as Entity, containerInst]),
+			)
+	})
 }
 
 export function bindEntityEntryCleanup(): void {
-    query(Frame).onRemoved(EntryFor, (entryEntt, frame) => {
-        frame.Destroy()
-        // TODO: despawning (and possibly other world mutations) an entity inside of an observer callback that's observing it causes a crash.
-        task.defer(() => entryEntt.despawn())
-    })
+	EntryFor.onRemoved((entry, _v, despawned) => {
+		if (despawned) return
+
+		const frame = entry.get(Frame)
+		if (!frame) return
+
+		frame.Destroy()
+		entry.despawn()
+	})
 }
