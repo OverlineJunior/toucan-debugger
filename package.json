@@ -1,6 +1,6 @@
 {
 	"name": "@rbxts/toucan-debugger",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "",
 	"main": "out/init.lua",
 	"scripts": {
@@ -35,6 +35,6 @@
 	},
 	"dependencies": {
 		"@rbxts/services": "^1.6.0",
-		"@rbxts/toucan": "0.7.0"
+		"@rbxts/toucan": "0.7.1"
 	}
 }

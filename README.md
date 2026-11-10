@@ -17,7 +17,7 @@ npm install @rbxts/toucan-debugger
 ```
 
 > [!IMPORTANT]
-> The version of Toucan your game uses must be the same as the one this debugger plugin uses. This package currently targets `@rbxts/toucan` `0.6.0`.
+> The version of Toucan your game uses must be the same as the one this debugger plugin uses. This package currently targets `@rbxts/toucan` `0.7.1`.
 
 ## Usage
 
