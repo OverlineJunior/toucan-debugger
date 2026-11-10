@@ -14,6 +14,7 @@ export const ScrollingFrame = component<ScrollingFrame>('ScrollingFrame')
 export const ImageButton = component<ImageButton>('ImageButton')
 export const ImageLabel = component<ImageLabel>('ImageLabel')
 export const TextLabel = component<TextLabel>('TextLabel')
+export const TextButton = component<TextButton>('TextButton')
 export const UIPadding = component<UIPadding>('UIPadding')
 export const UIListLayout = component<UIListLayout>('UIListLayout')
 export const UIFlexItem = component<UIFlexItem>('UIFlexItem')
@@ -31,6 +32,7 @@ const SUPPORTED_INSTANCES = {
 	ImageButton,
 	ImageLabel,
 	TextLabel,
+	TextButton,
 	UIPadding,
 	UIListLayout,
 	UIFlexItem,

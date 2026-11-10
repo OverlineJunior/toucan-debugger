@@ -1,5 +1,5 @@
-import { entityFor } from '../instance'
 import type { Theme } from '../themes'
+import { entityFor } from '../util/instance'
 import explorer from './explorer'
 import footer from './footer'
 import hero from './hero'

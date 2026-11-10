@@ -1,38 +1,28 @@
 import { Players, RunService } from '@rbxts/services'
 import type { Scheduler } from '@rbxts/toucan'
-import { updateCollapsible } from './collapsible'
-import { bindEntityViewCleanup, drawEntityEntries } from './drawEntityEntries'
-import { type ServerSnapshot, snapshotEvent } from './snapshot'
+import { snapshotEvent } from './snapshot'
+import { setServerSnapshot } from './state/explorer'
+import { updateCollapsible } from './systems/collapsible'
+import {
+	bindClientViewCleanup,
+	drawClientViews,
+} from './systems/drawClientViews'
+import {
+	bindServerViewCleanup,
+	drawServerViews,
+} from './systems/drawServerViews'
+import { updateRuntimeLabel } from './systems/updateRuntimeLabel'
 import { type Theme, themes } from './themes'
-import explorerPanel from './ui'
-import { updateRuntimeLabel } from './updateRuntimeLabel'
-
-let serverSnapshot: ServerSnapshot = []
-let snapshotDirty = false
-
-export function getServerSnapshot(): ServerSnapshot {
-	return serverSnapshot
-}
-
-export function consumeSnapshotDirty(): boolean {
-	const dirty = snapshotDirty
-	snapshotDirty = false
-	return dirty
-}
+import explorerPanel from './ui/panel'
 
 function setupDebuggerPanel(parent: Instance, theme: Theme) {
 	explorerPanel(parent, theme)
 }
 
+/** Subscribes to server snapshot broadcasts and stores the latest one. */
 export function bindServerSnapshot(): void {
 	snapshotEvent.OnClientEvent.Connect((snapshot) => {
-		serverSnapshot = snapshot
-		snapshotDirty = true
-		print(
-			'[toucan-debugger] received server snapshot',
-			snapshot.size(),
-			snapshot,
-		)
+		setServerSnapshot(snapshot)
 	})
 }
 
@@ -63,10 +53,12 @@ export function toucanDebuggerClient(
 
 	scheduler
 		.useSystem('preStartup', setupDebuggerPanel, { args: [playerGui, theme] })
-		.useSystem('preStartup', bindEntityViewCleanup)
+		.useSystem('preStartup', bindClientViewCleanup)
+		.useSystem('preStartup', bindServerViewCleanup)
 		.useSystem('preStartup', bindServerSnapshot)
 		.useSystemChain('last', [
-			[drawEntityEntries, { args: [theme] }],
+			[drawClientViews, { args: [theme] }],
+			[drawServerViews, { args: [theme] }],
 			[updateCollapsible, { args: [theme] }],
 			updateRuntimeLabel,
 		])

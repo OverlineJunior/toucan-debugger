@@ -1,21 +1,26 @@
-import { component } from '@rbxts/toucan'
-import { type EntityInstance, entityFor } from '../../instance'
+import { type Component, component } from '@rbxts/toucan'
 import type { Theme } from '../../themes'
+import { type EntityInstance, entityFor } from '../../util/instance'
 
-export const EntityList = component('EntityList')
+export const ClientEntityList = component('ClientEntityList')
+export const ServerEntityList = component('ServerEntityList')
 
-export default function entityList(
+function makeEntityList(
+	name: string,
+	tag: Component<undefined>,
 	theme: Theme,
+	beginVisible: boolean,
 ): EntityInstance<ScrollingFrame> {
 	return entityFor('ScrollingFrame', {
-		Name: 'entityList',
+		Name: name,
+		Visible: beginVisible,
 		CanvasSize: UDim2.fromScale(0, 0),
 		AutomaticCanvasSize: Enum.AutomaticSize.Y,
 		ScrollBarThickness: 0,
 		BackgroundColor3: theme.colors.surface1,
 		BorderColor3: theme.colors.border,
 		LayoutOrder: 1,
-		callback: (e) => e.set(EntityList),
+		callback: (e) => e.set(tag),
 
 		children: [
 			entityFor('UIFlexItem', {
@@ -37,4 +42,14 @@ export default function entityList(
 			}),
 		],
 	})
+}
+
+/** Builds the client-side entity list. */
+export function clientEntityList(theme: Theme): EntityInstance<ScrollingFrame> {
+	return makeEntityList('clientEntityList', ClientEntityList, theme, true)
+}
+
+/** Builds the hidden server-side entity list. */
+export function serverEntityList(theme: Theme): EntityInstance<ScrollingFrame> {
+	return makeEntityList('serverEntityList', ServerEntityList, theme, false)
 }

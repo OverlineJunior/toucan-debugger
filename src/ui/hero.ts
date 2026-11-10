@@ -1,5 +1,5 @@
-import { type EntityInstance, entityFor } from '../instance'
 import { ROBLOX_TOPBAR_HEIGHT, type Theme } from '../themes'
+import { type EntityInstance, entityFor } from '../util/instance'
 
 export default function hero(theme: Theme): EntityInstance<Frame> {
 	return entityFor('Frame', {

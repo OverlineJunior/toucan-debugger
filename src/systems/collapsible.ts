@@ -1,5 +1,5 @@
 import { component, query } from '@rbxts/toucan'
-import type { Theme } from './themes'
+import type { Theme } from '../themes'
 
 export const Collapsible = component<{
 	toggleButton: GuiButton
@@ -8,7 +8,7 @@ export const Collapsible = component<{
 }>('Collapsible')
 
 // TODO: This is temporary - use `useEvent` or another approach.
-const Done = component('Done')
+const CollapsibleInitialized = component('Done')
 
 export function updateCollapsible(theme: Theme) {
 	query(Collapsible).forEach((e, { toggleButton, chevron, body }) => {
@@ -16,7 +16,7 @@ export function updateCollapsible(theme: Theme) {
 		chevron.Visible = hasContent
 		body.Visible = hasContent ? body.Visible : false
 
-		if (!e.has(Done)) {
+		if (!e.has(CollapsibleInitialized)) {
 			// Start closed.
 			body.Visible = false
 
@@ -29,7 +29,7 @@ export function updateCollapsible(theme: Theme) {
 					: theme.icons.chevronRight
 			})
 
-			e.set(Done)
+			e.set(CollapsibleInitialized)
 		}
 	})
 }

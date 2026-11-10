@@ -11,17 +11,13 @@ const DEFAULT_SERVER_INTERVAL = 1
 let serverInterval = DEFAULT_SERVER_INTERVAL
 let lastBroadcast = 0
 
+/** Broadcasts the current server snapshot to all clients, throttled by `serverInterval`. */
 export function broadcastServerSnapshot(): void {
 	const now = time()
 	if (now - lastBroadcast < serverInterval) return
 	lastBroadcast = now
 
 	const snapshot = collectServerSnapshot()
-	print(
-		'[toucan-debugger] broadcasting server snapshot',
-		snapshot.size(),
-		snapshot,
-	)
 	snapshotEvent.FireAllClients(snapshot)
 }
 

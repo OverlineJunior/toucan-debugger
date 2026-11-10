@@ -1,33 +1,111 @@
-import {
-	Builtin,
-	component,
-	type Entity,
-	type EntityLike,
-	pair,
-} from '@rbxts/toucan'
-import { Collapsible } from '../../collapsible'
-import { type EntityInstance, entityFor } from '../../instance'
+import { component, type Entity } from '@rbxts/toucan'
+import type { EntityDescriptor, EntityKind } from '../../descriptor'
+import { Collapsible } from '../../systems/collapsible'
 import type { Theme } from '../../themes'
-import { RuntimeLabelFor } from '../../updateRuntimeLabel'
+import { formatMs } from '../../util/format'
+import { type EntityInstance, entityFor } from '../../util/instance'
 
 const HEADER_HEIGHT = 20
 
 export const NoView = component('NoView')
 
-function getEntityIcon(entity: EntityLike, theme: Theme): string {
-	if (entity.has(Builtin.Component)) return theme.icons.component
-	if (entity.has(Builtin.System)) return theme.icons.system
-	if (entity.has(Builtin.Schedule)) return theme.icons.schedule
-	if (entity.has(Builtin.Plugin)) return theme.icons.plugin
+export interface EntityView {
+	root: EntityInstance<Frame>
+	header: EntityViewHeader
+	body: EntityInstance<Frame>
+}
+
+interface EntityViewHeader {
+	root: EntityInstance<ImageButton>
+	icon: EntityInstance<ImageLabel>
+	id: EntityInstance<TextLabel>
+	label: EntityInstance<TextLabel>
+	runtimeLabel?: EntityInstance<TextLabel>
+	chevron: EntityInstance<ImageLabel>
+}
+
+function getEntityIcon(kind: EntityKind, theme: Theme): string {
+	if (kind === 'component') return theme.icons.component
+	if (kind === 'system') return theme.icons.system
+	if (kind === 'schedule') return theme.icons.schedule
+	if (kind === 'plugin') return theme.icons.plugin
 	return theme.icons.entity
 }
 
 function makeHeader(
-	entity: EntityLike,
+	descriptor: EntityDescriptor,
 	theme: Theme,
-	callback: (header: ImageButton, chevron: ImageLabel) => void,
-): EntityInstance<ImageButton> {
-	let chevron: ImageLabel
+): EntityViewHeader {
+	const icon = entityFor('ImageLabel', {
+		Name: 'icon',
+		Image: getEntityIcon(descriptor.kind, theme),
+		ImageColor3: theme.colors.contentMuted,
+		Size: UDim2.fromScale(0, 1),
+		BackgroundTransparency: 1,
+		LayoutOrder: 0,
+
+		child: entityFor('UIAspectRatioConstraint', {
+			AspectType: Enum.AspectType.ScaleWithParentSize,
+			DominantAxis: Enum.DominantAxis.Height,
+		}),
+	})
+
+	const id = entityFor('TextLabel', {
+		Name: 'id',
+		Text: `#${descriptor.id}`,
+		FontFace: theme.fonts.regular,
+		TextSize: theme.fontSizes.small,
+		TextXAlignment: Enum.TextXAlignment.Left,
+		TextColor3: theme.colors.contentMuted,
+		Size: new UDim2(0, 33.5, 1, 0),
+		BackgroundTransparency: 1,
+		LayoutOrder: 1,
+	})
+
+	const label = entityFor('TextLabel', {
+		Name: 'label',
+		Text: descriptor.label,
+		FontFace: theme.fonts.regular,
+		TextSize: theme.fontSizes.small,
+		TextXAlignment: Enum.TextXAlignment.Left,
+		TextColor3: theme.colors.content,
+		Size: new UDim2(0, 40, 1, 0),
+		AutomaticSize: Enum.AutomaticSize.X,
+		BackgroundTransparency: 1,
+		LayoutOrder: 2,
+	})
+
+	const runtimeLabel =
+		descriptor.kind === 'system'
+			? entityFor('TextLabel', {
+					Name: 'runtime',
+					Text:
+						descriptor.runtimeMs !== undefined
+							? formatMs(descriptor.runtimeMs)
+							: '?',
+					FontFace: theme.fonts.extraLightItalic,
+					TextSize: theme.fontSizes.tiny,
+					TextXAlignment: Enum.TextXAlignment.Left,
+					TextYAlignment: Enum.TextYAlignment.Bottom,
+					TextColor3: theme.colors.contentMuted,
+					Size: new UDim2(0, 35, 1, 0),
+					BackgroundTransparency: 1,
+					LayoutOrder: 3,
+				})
+			: undefined
+
+	const chevron = entityFor('ImageLabel', {
+		Name: 'chevron',
+		Size: UDim2.fromScale(0, 1),
+		Position: UDim2.fromScale(0.8, 0),
+		BackgroundTransparency: 1,
+		Image: theme.icons.chevronRight,
+
+		child: entityFor('UIAspectRatioConstraint', {
+			AspectType: Enum.AspectType.ScaleWithParentSize,
+			DominantAxis: Enum.DominantAxis.Height,
+		}),
+	})
 
 	const header = entityFor('ImageButton', {
 		Name: 'header',
@@ -73,96 +151,60 @@ function makeHeader(
 						FlexMode: Enum.UIFlexMode.Fill,
 					}),
 
-					entityFor('ImageLabel', {
-						Name: 'icon',
-						Image: getEntityIcon(entity, theme),
-						ImageColor3: theme.colors.contentMuted,
-						Size: UDim2.fromScale(0, 1),
-						BackgroundTransparency: 1,
-						LayoutOrder: 0,
-
-						child: entityFor('UIAspectRatioConstraint', {
-							AspectType: Enum.AspectType.ScaleWithParentSize,
-							DominantAxis: Enum.DominantAxis.Height,
-						}),
-					}),
-
-					entityFor('TextLabel', {
-						Name: 'id',
-						Text: `#${entity.id}`,
-						FontFace: theme.fonts.regular,
-						TextSize: theme.fontSizes.small,
-						TextXAlignment: Enum.TextXAlignment.Left,
-						TextColor3: theme.colors.contentMuted,
-						Size: new UDim2(0, 33.5, 1, 0),
-						BackgroundTransparency: 1,
-						LayoutOrder: 1,
-					}),
-
-					entityFor('TextLabel', {
-						Name: 'label',
-						Text: entity.toString(),
-						FontFace: theme.fonts.regular,
-						TextSize: theme.fontSizes.small,
-						TextXAlignment: Enum.TextXAlignment.Left,
-						TextColor3: theme.colors.content,
-						Size: new UDim2(0, 40, 1, 0),
-						AutomaticSize: Enum.AutomaticSize.X,
-						BackgroundTransparency: 1,
-						LayoutOrder: 2,
-					}),
-
-					entity.has(Builtin.System) &&
-						entityFor('TextLabel', {
-							Name: 'runtime',
-							Text: '?',
-							FontFace: theme.fonts.extraLightItalic,
-							TextSize: theme.fontSizes.tiny,
-							TextXAlignment: Enum.TextXAlignment.Left,
-							TextYAlignment: Enum.TextYAlignment.Bottom,
-							TextColor3: theme.colors.contentMuted,
-							Size: new UDim2(0, 35, 1, 0),
-							BackgroundTransparency: 1,
-							LayoutOrder: 3,
-
-							callback: (e) => e.set(pair(RuntimeLabelFor, entity)),
-						}),
+					icon,
+					id,
+					label,
+					runtimeLabel,
 				],
 			}),
 
-			entityFor('ImageLabel', {
-				Name: 'chevron',
-				Size: UDim2.fromScale(0, 1),
-				Position: UDim2.fromScale(0.8, 0),
-				BackgroundTransparency: 1,
-				Image: theme.icons.chevronRight,
-
-				callback: (_e, inst) => {
-					chevron = inst
-				},
-
-				child: entityFor('UIAspectRatioConstraint', {
-					AspectType: Enum.AspectType.ScaleWithParentSize,
-					DominantAxis: Enum.DominantAxis.Height,
-				}),
-			}),
+			chevron,
 		],
 	})
 
-	callback(header[1], chevron!)
-	return header
+	return {
+		root: header,
+		icon,
+		id,
+		label,
+		runtimeLabel,
+		chevron,
+	}
 }
 
+function makeBody(theme: Theme): EntityInstance<Frame> {
+	return entityFor('Frame', {
+		Name: 'body',
+		Size: UDim2.fromScale(1, 0),
+		AutomaticSize: Enum.AutomaticSize.Y,
+		Transparency: 1,
+		LayoutOrder: 1,
+
+		children: [
+			entityFor('UIListLayout', {
+				FillDirection: Enum.FillDirection.Vertical,
+				HorizontalFlex: Enum.UIFlexAlignment.Fill,
+				SortOrder: Enum.SortOrder.LayoutOrder,
+				Padding: theme.paddingSizes.medium,
+			}),
+
+			entityFor('UIPadding', {
+				PaddingLeft: new UDim(0, theme.explorerIndent),
+			}),
+		],
+	})
+}
+
+/** Builds a collapsible view for an entity descriptor. */
 export default function entityView(
-	entity: EntityLike,
+	descriptor: EntityDescriptor,
 	theme: Theme,
-): [EntityInstance<Frame>, Frame] {
-	let header: GuiButton
-	let chevron: ImageLabel
-	let body: Frame
+): EntityView {
+	const header = makeHeader(descriptor, theme)
+	const body = makeBody(theme)
 
 	const view = entityFor('Frame', {
-		Name: `entityView: ${entity}`,
+		Name: `entityView: ${descriptor.label}`,
 		Size: UDim2.fromScale(0, 0),
 		AutomaticSize: Enum.AutomaticSize.Y,
 		Transparency: 1,
@@ -174,42 +216,15 @@ export default function entityView(
 				Padding: theme.paddingSizes.medium,
 			}),
 
-			makeHeader(entity, theme, (hdr, chv) => {
-				header = hdr
-				chevron = chv
-			}),
-
-			entityFor('Frame', {
-				Name: 'body',
-				Size: UDim2.fromScale(1, 0),
-				AutomaticSize: Enum.AutomaticSize.Y,
-				Transparency: 1,
-				LayoutOrder: 1,
-
-				callback: (_e, inst) => {
-					body = inst
-				},
-
-				children: [
-					entityFor('UIListLayout', {
-						FillDirection: Enum.FillDirection.Vertical,
-						HorizontalFlex: Enum.UIFlexAlignment.Fill,
-						SortOrder: Enum.SortOrder.LayoutOrder,
-						Padding: theme.paddingSizes.medium,
-					}),
-
-					entityFor('UIPadding', {
-						PaddingLeft: new UDim(0, theme.explorerIndent),
-					}),
-				],
-			}),
+			header.root,
+			body,
 		],
 	})
 
 	view[0].set(Collapsible, {
-		toggleButton: header!,
-		chevron: chevron!,
-		body: body!,
+		toggleButton: header.root[1],
+		chevron: header.chevron[1],
+		body: body[1],
 	})
 
 	// Without this, `drawEntities` would add entries infinitely, crashing the game.
@@ -219,5 +234,5 @@ export default function entityView(
 	}
 	addNoViewRecursive(view[0])
 
-	return [view, body!]
+	return { root: view, header, body }
 }

@@ -1,8 +1,9 @@
-import { type EntityInstance, entityFor } from '../../instance'
 import type { Theme } from '../../themes'
+import { type EntityInstance, entityFor } from '../../util/instance'
 import dashboard from './dashboard'
-import entityList from './entityList'
+import { clientEntityList, serverEntityList } from './entityList'
 
+/** Builds the explorer panel containing the client and server lists. */
 export default function explorer(theme: Theme): EntityInstance<Frame> {
 	return entityFor('Frame', {
 		Name: 'explorer',
@@ -22,7 +23,9 @@ export default function explorer(theme: Theme): EntityInstance<Frame> {
 
 			dashboard(theme),
 
-			entityList(theme),
+			clientEntityList(theme),
+
+			serverEntityList(theme),
 		],
 	})
 }

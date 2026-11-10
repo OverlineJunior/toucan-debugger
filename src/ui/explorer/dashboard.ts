@@ -1,5 +1,5 @@
-import { type EntityInstance, entityFor } from '../../instance'
 import type { Theme } from '../../themes'
+import { type EntityInstance, entityFor } from '../../util/instance'
 
 export default function dashboard(theme: Theme): EntityInstance<Frame> {
 	return entityFor('Frame', {
