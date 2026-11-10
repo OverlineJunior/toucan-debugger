@@ -5,6 +5,7 @@
     "": {
       "name": "@rbxts/toucan-debugger",
       "dependencies": {
+        "@rbxts/link": "^1.2.3",
         "@rbxts/services": "^1.6.0",
         "@rbxts/toucan": "0.7.1",
       },
@@ -40,6 +41,8 @@
     "@rbxts/compiler-types": ["@rbxts/compiler-types@3.0.0-types.0", "", {}, "sha512-VGOHJPoL7+56NTatMGqQj3K7xWuzEV+aP4QD5vZiHu+bcff3kiTmtoadaF6NkJrmwfFAvbsd4Dg764ZjWNceag=="],
 
     "@rbxts/jecs": ["@rbxts/jecs@0.11.0", "", {}, "sha512-rJPZkqrL8PXVX5YP5a9gMcddm8U7TeXZDYEbBTAXs81r9IKhTWNVxGoFRPTbsDT4BhwM0LMvydvWDAqHvWzHpA=="],
+
+    "@rbxts/link": ["@rbxts/link@1.2.3", "", {}, "sha512-oKInGr0NzHlB497N+SnxnbYo5A2IfWWepxxSLdbimWnyOL5wTWsdbW/FecZL+NL/UV+3JXwfP0uOwpM2ioIxFA=="],
 
     "@rbxts/services": ["@rbxts/services@1.6.0", "", {}, "sha512-YH02E1/tGHeMXB0Mam8qPdAZa2fjQWdylEscSL4Zn0RIaQeByYImA2qUsXM3nBdhcyKHDwltzSznDKyCGfFEWA=="],
 

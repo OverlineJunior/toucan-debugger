@@ -18,6 +18,7 @@
 		"typescript": "^5.9.3"
 	},
 	"dependencies": {
+		"@rbxts/link": "^1.2.3",
 		"@rbxts/toucan": "0.7.1"
 	}
 }
