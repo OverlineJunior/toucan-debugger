@@ -12,7 +12,7 @@ import { RuntimeLabelFor } from '../../updateRuntimeLabel'
 
 const HEADER_HEIGHT = 20
 
-export const NoEntry = component('NoEntry')
+export const NoView = component('NoView')
 
 function getEntityIcon(entity: EntityLike, theme: Theme): string {
 	if (entity.has(Builtin.Component)) return theme.icons.component
@@ -153,7 +153,7 @@ function makeHeader(
 	return header
 }
 
-export default function entityEntry(
+export default function entityView(
 	entity: EntityLike,
 	theme: Theme,
 ): [EntityInstance<Frame>, Frame] {
@@ -161,8 +161,8 @@ export default function entityEntry(
 	let chevron: ImageLabel
 	let body: Frame
 
-	const entry = entityFor('Frame', {
-		Name: `entityEntry: ${entity}`,
+	const view = entityFor('Frame', {
+		Name: `entityView: ${entity}`,
 		Size: UDim2.fromScale(0, 0),
 		AutomaticSize: Enum.AutomaticSize.Y,
 		Transparency: 1,
@@ -206,18 +206,18 @@ export default function entityEntry(
 		],
 	})
 
-	entry[0].set(Collapsible, {
+	view[0].set(Collapsible, {
 		toggleButton: header!,
 		chevron: chevron!,
 		body: body!,
 	})
 
 	// Without this, `drawEntities` would add entries infinitely, crashing the game.
-	const addNoEntryRecursive = (e: Entity) => {
-		e.set(NoEntry)
-		e.children().forEach((c) => addNoEntryRecursive(c as Entity))
+	const addNoViewRecursive = (e: Entity) => {
+		e.set(NoView)
+		e.children().forEach((c) => addNoViewRecursive(c as Entity))
 	}
-	addNoEntryRecursive(entry[0])
+	addNoViewRecursive(view[0])
 
-	return [entry, body!]
+	return [view, body!]
 }

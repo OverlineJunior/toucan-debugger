@@ -9,15 +9,15 @@ import {
 } from '@rbxts/toucan'
 import { type EntityInstance, Frame, ScrollingFrame } from './instance'
 import type { Theme } from './themes'
-import entityEntry, { NoEntry } from './ui/explorer/entityEntry'
 import { EntityList } from './ui/explorer/entityList'
+import entityView, { NoView } from './ui/explorer/entityView'
 
-export const EntryFor = component('EntryFor')
+export const ViewFor = component('ViewFor')
 
 const seen = new Set<RawId>()
 
-function canPlaceEntry(e: EntityLike): boolean {
-	return !e.has(NoEntry) && !seen.has(e.id)
+function canPlaceView(e: EntityLike): boolean {
+	return !e.has(NoView) && !seen.has(e.id)
 }
 
 export function drawEntityEntries(theme: Theme): void {
@@ -25,15 +25,15 @@ export function drawEntityEntries(theme: Theme): void {
 		e: EntityLike,
 		[parentEntt, parentInst]: EntityInstance,
 	) => {
-		const [[entryEntt, entryInst], body] = entityEntry(e, theme)
-		entryEntt.set(pair(Builtin.ChildOf, parentEntt))
-		entryEntt.set(pair(EntryFor, e))
-		entryInst.Parent = parentInst
+		const [[viewEntt, viewInst], body] = entityView(e, theme)
+		viewEntt.set(pair(Builtin.ChildOf, parentEntt))
+		viewEntt.set(pair(ViewFor, e))
+		viewInst.Parent = parentInst
 		seen.add(e.id)
 
 		e.children()
-			.filter((c) => canPlaceEntry(c))
-			.forEach((c) => placeEntriesDeep(c, [entryEntt, body]))
+			.filter((c) => canPlaceView(c))
+			.forEach((c) => placeEntriesDeep(c, [viewEntt, body]))
 	}
 
 	const [containerEntt, containerInst] = query(ScrollingFrame)
@@ -43,21 +43,21 @@ export function drawEntityEntries(theme: Theme): void {
 	const enttKinds = [Builtin.Entity, Builtin.Component, Builtin.Resource]
 	enttKinds.forEach((enttKind) => {
 		query(enttKind)
-			.filter((e) => canPlaceEntry(e) && e.parent() === undefined)
+			.filter((e) => canPlaceView(e) && e.parent() === undefined)
 			.forEach((e) =>
 				placeEntriesDeep(e, [containerEntt as Entity, containerInst]),
 			)
 	})
 }
 
-export function bindEntityEntryCleanup(): void {
-	EntryFor.onRemoved((entry, _v, despawned) => {
+export function bindEntityViewCleanup(): void {
+	ViewFor.onRemoved((view, _v, despawned) => {
 		if (despawned) return
 
-		const frame = entry.get(Frame)
+		const frame = view.get(Frame)
 		if (!frame) return
 
 		frame.Destroy()
-		entry.despawn()
+		view.despawn()
 	})
 }

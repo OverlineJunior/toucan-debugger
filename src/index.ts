@@ -1,7 +1,7 @@
 import { Players, RunService } from '@rbxts/services'
 import type { Scheduler } from '@rbxts/toucan'
 import { updateCollapsible } from './collapsible'
-import { bindEntityEntryCleanup, drawEntityEntries } from './drawEntityEntries'
+import { bindEntityViewCleanup, drawEntityEntries } from './drawEntityEntries'
 import { type Theme, themes } from './themes'
 import explorerPanel from './ui'
 import { updateRuntimeLabel } from './updateRuntimeLabel'
@@ -39,7 +39,7 @@ export default function toucanDebugger(
 
 	scheduler
 		.useSystem('preStartup', setupDebuggerPanel, { args: [playerGui, theme] })
-		.useSystem('preStartup', bindEntityEntryCleanup)
+		.useSystem('preStartup', bindEntityViewCleanup)
 		.useSystemChain('last', [
 			[drawEntityEntries, { args: [theme] }],
 			[updateCollapsible, { args: [theme] }],
