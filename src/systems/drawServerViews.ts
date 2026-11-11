@@ -1,4 +1,5 @@
 import { Builtin, component, pair, query, type RawId } from '@rbxts/toucan'
+import type { ServerNode } from '../snapshot'
 import {
 	consumeSnapshotDirty,
 	getActiveEnv,
@@ -6,12 +7,29 @@ import {
 } from '../state/explorer'
 import type { Theme } from '../themes'
 import { ServerEntityList } from '../ui/explorer/entityList'
-import entityView, { type EntityView } from '../ui/explorer/entityView'
+import entityView, {
+	type EntityView,
+	getEntityIcon,
+} from '../ui/explorer/entityView'
+import { formatMs } from '../util/format'
 import { Frame, ScrollingFrame } from '../util/instance'
 
 export const ServerView = component('ServerView')
 
-/** Rebuilds the server list from the latest snapshot when it is dirty. */
+// Persists server views across snapshots so collapsible's expansion state survives refreshes.
+const views = new Map<RawId, EntityView>()
+
+function updateView(view: EntityView, node: ServerNode, theme: Theme): void {
+	view.header.icon[1].Image = getEntityIcon(node.kind, theme)
+	view.header.label[1].Text = node.label
+
+	if (view.header.runtimeLabel) {
+		view.header.runtimeLabel[1].Text =
+			node.runtimeMs !== undefined ? formatMs(node.runtimeMs) : '?'
+	}
+}
+
+/** Syncs the server list with the latest snapshot when it is dirty. */
 export function drawServerViews(theme: Theme): void {
 	if (getActiveEnv() !== 'server' || !consumeSnapshotDirty()) return
 
@@ -19,16 +37,26 @@ export function drawServerViews(theme: Theme): void {
 		.with(ServerEntityList)
 		.collect()[0]
 
-	query(ServerView).forEach((e) => e.despawn())
-
-	const views = new Map<RawId, EntityView>()
 	const snapshot = getServerSnapshot()
+	const seen = new Set<RawId>()
+	for (const node of snapshot) seen.add(node.id)
 
 	snapshot.forEach((node, index) => {
-		const view = entityView(node, theme)
+		let view = views.get(node.id)
+
+		if (view) {
+			updateView(view, node, theme)
+		} else {
+			view = entityView(node, theme)
+			view.root[0].set(ServerView)
+			views.set(node.id, view)
+		}
+
 		const [viewEntt, viewInst] = view.root
 		const parent =
-			node.parentId !== undefined ? views.get(node.parentId) : undefined
+			node.parentId !== undefined && seen.has(node.parentId)
+				? views.get(node.parentId)
+				: undefined
 
 		if (parent) {
 			viewEntt.set(pair(Builtin.ChildOf, parent.root[0]))
@@ -38,10 +66,15 @@ export function drawServerViews(theme: Theme): void {
 			viewInst.Parent = containerInst
 		}
 
-		viewEntt.set(ServerView)
 		viewInst.LayoutOrder = index
-		views.set(node.id, view)
 	})
+
+	// Despawn views whose entities are no longer in the snapshot.
+	for (const [id, view] of views) {
+		if (seen.has(id)) continue
+		view.root[0].despawn()
+		views.delete(id)
+	}
 }
 
 /** Destroys server view frames when their view entity is removed. */

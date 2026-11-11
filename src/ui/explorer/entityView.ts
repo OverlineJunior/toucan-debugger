@@ -24,7 +24,7 @@ interface EntityViewHeader {
 	chevron: EntityInstance<ImageLabel>
 }
 
-function getEntityIcon(kind: EntityKind, theme: Theme): string {
+export function getEntityIcon(kind: EntityKind, theme: Theme): string {
 	if (kind === 'component') return theme.icons.component
 	if (kind === 'system') return theme.icons.system
 	if (kind === 'schedule') return theme.icons.schedule
