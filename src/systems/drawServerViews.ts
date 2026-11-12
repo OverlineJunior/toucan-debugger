@@ -8,6 +8,7 @@ import {
 import type { Theme } from '../themes'
 import { ServerEntityList } from '../ui/explorer/entityList'
 import entityView, {
+	drawEntityDetails,
 	type EntityView,
 	getEntityIcon,
 } from '../ui/explorer/entityView'
@@ -27,6 +28,8 @@ function updateView(view: EntityView, node: ServerNode, theme: Theme): void {
 		view.header.runtimeLabel[1].Text =
 			node.runtimeMs !== undefined ? formatMs(node.runtimeMs) : '?'
 	}
+
+	drawEntityDetails(view, node, theme)
 }
 
 /** Syncs the server list with the latest snapshot when it is dirty. */
@@ -60,7 +63,7 @@ export function drawServerViews(theme: Theme): void {
 
 		if (parent) {
 			viewEntt.set(pair(Builtin.ChildOf, parent.root[0]))
-			viewInst.Parent = parent.body[1]
+			viewInst.Parent = parent.body.root[1]
 		} else {
 			viewEntt.set(pair(Builtin.ChildOf, containerEntt))
 			viewInst.Parent = containerInst

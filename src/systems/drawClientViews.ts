@@ -24,15 +24,17 @@ function canPlaceView(e: EntityLike): boolean {
 
 /** Draws client-side entity views into the client list. */
 export function drawClientViews(theme: Theme): void {
-	const placeEntriesDeep = (
+	const placeViewsDeep = (
 		e: EntityLike,
 		[parentEntt, parentInst]: EntityInstance,
+		order: number,
 	) => {
 		const view = entityView(describeEntity(e), theme)
 		const [viewEntt, viewInst] = view.root
 		viewEntt.set(pair(Builtin.ChildOf, parentEntt))
 		viewEntt.set(pair(ClientViewFor, e))
 		viewInst.Parent = parentInst
+		viewInst.LayoutOrder = order
 		seen.add(e.id)
 
 		if (view.header.runtimeLabel) {
@@ -41,7 +43,9 @@ export function drawClientViews(theme: Theme): void {
 
 		e.children()
 			.filter((c) => canPlaceView(c))
-			.forEach((c) => placeEntriesDeep(c, [viewEntt, view.body[1]]))
+			.forEach((c, index) =>
+				placeViewsDeep(c, [viewEntt, view.body.root[1]], index),
+			)
 	}
 
 	const [containerEntt, containerInst] = query(ScrollingFrame)
@@ -50,11 +54,12 @@ export function drawClientViews(theme: Theme): void {
 
 	const enttKinds = [Builtin.Entity, Builtin.Component, Builtin.Resource]
 	enttKinds.forEach((enttKind) => {
+		let index = 0
 		query(enttKind)
 			.filter((e) => canPlaceView(e) && e.parent() === undefined)
-			.forEach((e) =>
-				placeEntriesDeep(e, [containerEntt as Entity, containerInst]),
-			)
+			.forEach((e) => {
+				placeViewsDeep(e, [containerEntt as Entity, containerInst], index++)
+			})
 	})
 }
 

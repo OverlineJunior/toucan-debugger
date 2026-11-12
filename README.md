@@ -2,11 +2,13 @@
 
 A visual debugger plugin for [Toucan](https://github.com/OverlineJunior/toucan).
 
-It is currently very early in development and cannot observe the server. It can however:
+Features:
 
-- List every entity-like along its id and type icon;
+- List every entity along its id and type icon;
+- List every component and relationship an entity has;
 - Display `ChildOf` hierarchies;
-- Measure system runtimes (they're under schedules).
+- Measure system runtimes (they're under schedules);
+- Observe both the client and the server.
 
 <img src="assets/showcase.png" style="vertical-align: bottom;"/>
 

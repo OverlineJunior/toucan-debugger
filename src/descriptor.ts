@@ -13,6 +13,8 @@ export interface EntityDescriptor {
 	label: string
 	kind: EntityKind
 	runtimeMs?: number
+	components?: string[]
+	relationships?: string[]
 }
 
 /** Returns the debugger kind for an entity-like value. */
@@ -31,5 +33,11 @@ export function describeEntity(e: EntityLike): EntityDescriptor {
 		id: e.id,
 		label: e.toString(),
 		kind: getEntityKind(e),
+		components: e.components().map((c) => c.toString()),
+		relationships: e
+			.relationships()
+			// ChildOf is already rendered as the entity tree.
+			.filter((p) => p.relation.id !== Builtin.ChildOf.id)
+			.map((p) => `(${p.relation}, ${p.target})`),
 	}
 }

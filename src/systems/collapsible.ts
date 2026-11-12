@@ -12,16 +12,24 @@ const CollapsibleInitialized = component('Done')
 
 export function updateCollapsible(theme: Theme) {
 	query(Collapsible).forEach((e, { toggleButton, chevron, body }) => {
-		const hasContent = body.GetChildren().some((c) => c.IsA('GuiObject'))
-		chevron.Visible = hasContent
-		body.Visible = hasContent ? body.Visible : false
+		// Only visible GuiObjects count, so the always-present empty details frame is ignored.
+		const hasContent = () =>
+			body.GetChildren().some((c) => c.IsA('GuiObject') && c.Visible)
+
+		const content = hasContent()
+		chevron.Visible = content
+
+		if (!content) {
+			body.Visible = false
+			chevron.Image = theme.icons.chevronRight
+		}
 
 		if (!e.has(CollapsibleInitialized)) {
 			// Start closed.
 			body.Visible = false
 
 			toggleButton.MouseButton1Click.Connect(() => {
-				if (!hasContent) return
+				if (!hasContent()) return
 
 				body.Visible = !body.Visible
 				chevron.Image = body.Visible
