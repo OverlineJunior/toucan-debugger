@@ -20,7 +20,7 @@ export function makeDetailContainer(theme: Theme): EntityInstance<Frame> {
 		Name: 'detailContainer',
 		Size: UDim2.fromScale(1, 0),
 		AutomaticSize: Enum.AutomaticSize.Y,
-		Transparency: 1,
+		BackgroundColor3: theme.colors.surface2,
 		Visible: false,
 		LayoutOrder: 1e6,
 
@@ -29,6 +29,21 @@ export function makeDetailContainer(theme: Theme): EntityInstance<Frame> {
 				FillDirection: Enum.FillDirection.Vertical,
 				SortOrder: Enum.SortOrder.LayoutOrder,
 				Padding: theme.paddingSizes.small,
+			}),
+
+			entityFor('UIPadding', {
+				PaddingBottom: theme.paddingSizes.small,
+				PaddingTop: theme.paddingSizes.small,
+				PaddingLeft: theme.paddingSizes.small,
+				PaddingRight: theme.paddingSizes.small,
+			}),
+
+			entityFor('UICorner', {
+				CornerRadius: theme.paddingSizes.medium,
+			}),
+
+			entityFor('UIStroke', {
+				Color: theme.colors.border,
 			}),
 		],
 	})
