@@ -32,6 +32,7 @@ export default function entityView(
 		Size: UDim2.fromScale(0, 0),
 		AutomaticSize: Enum.AutomaticSize.Y,
 		Transparency: 1,
+		LayoutOrder: descriptor.id,
 
 		children: [
 			entityFor('UIListLayout', {
