@@ -5,39 +5,44 @@ export const Collapsible = component<{
 	toggleButton: GuiButton
 	chevron: ImageLabel
 	body: GuiObject
+	hasChildren?: () => boolean
 }>('Collapsible')
 
 // TODO: This is temporary - use `useEvent` or another approach.
 const CollapsibleInitialized = component('Done')
 
+function hasContent(body: GuiObject): boolean {
+	// Only visible GuiObjects count, so the always-present empty details frame is ignored.
+	return body.GetChildren().some((c) => c.IsA('GuiObject') && c.Visible)
+}
+
 export function updateCollapsible(theme: Theme) {
-	query(Collapsible).forEach((e, { toggleButton, chevron, body }) => {
-		// Only visible GuiObjects count, so the always-present empty details frame is ignored.
-		const hasContent = () =>
-			body.GetChildren().some((c) => c.IsA('GuiObject') && c.Visible)
-
-		const content = hasContent()
-		chevron.Visible = content
-
-		if (!content) {
-			body.Visible = false
-			chevron.Image = theme.icons.chevronRight
-		}
-
-		if (!e.has(CollapsibleInitialized)) {
-			// Start closed.
-			body.Visible = false
-
-			toggleButton.MouseButton1Click.Connect(() => {
-				if (!hasContent()) return
-
-				body.Visible = !body.Visible
+	query(Collapsible).forEach(
+		(e, { toggleButton, chevron, body, hasChildren }) => {
+			const syncChevron = () => {
 				chevron.Image = body.Visible
 					? theme.icons.chevronDown
 					: theme.icons.chevronRight
-			})
+				chevron.Visible = body.Visible || (hasChildren?.() ?? false)
+			}
 
-			e.set(CollapsibleInitialized)
-		}
-	})
+			if (!e.has(CollapsibleInitialized)) {
+				// Start closed.
+				body.Visible = false
+
+				toggleButton.MouseButton1Click.Connect(() => {
+					if (!hasContent(body)) return
+
+					body.Visible = !body.Visible
+					syncChevron()
+				})
+
+				e.set(CollapsibleInitialized)
+			} else if (body.Visible && !hasContent(body)) {
+				body.Visible = false
+			}
+
+			syncChevron()
+		},
+	)
 }
