@@ -40,11 +40,7 @@ export function describeEntity(e: EntityLike): EntityDescriptor {
 		kind,
 		runtimeMs: kind === 'system' ? e.get(Builtin.System)?.runtimeMs : undefined,
 		components: e.components().map((c) => c.toString()),
-		relationships: e
-			.relationships()
-			// ChildOf is already rendered as the entity tree.
-			.filter((p) => p.relation.id !== Builtin.ChildOf.id)
-			.map((p) => `(${p.relation}, ${p.target})`),
+		relationships: e.relationships().map((p) => `(${p.relation}, ${p.target})`),
 	}
 }
 
