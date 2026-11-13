@@ -6,7 +6,7 @@ import { updateCollapsible } from './systems/collapsible'
 import { drawClientViews } from './systems/drawClientViews'
 import { drawServerViews } from './systems/drawServerViews'
 import { type Theme, themes } from './themes'
-import { bindEntityViewCleanup } from './ui/explorer/viewSync'
+import { bindEntityViewCleanup } from './ui/explorer/entityView/viewSync'
 import explorerPanel from './ui/panel'
 
 function setupDebuggerPanel(parent: Instance, theme: Theme) {

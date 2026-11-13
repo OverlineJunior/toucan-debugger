@@ -4,7 +4,7 @@ import { getActiveEnv } from '../state/explorer'
 import type { Theme } from '../themes'
 import { ClientEntityList } from '../ui/explorer/entityList'
 import { type EntityView, NoView } from '../ui/explorer/entityView'
-import { syncEntityViews } from '../ui/explorer/viewSync'
+import { syncEntityViews } from '../ui/explorer/entityView/viewSync'
 import { ScrollingFrame } from '../util/instance'
 
 const UPDATE_INTERVAL = 0.25

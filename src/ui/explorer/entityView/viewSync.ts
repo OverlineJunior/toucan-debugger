@@ -1,13 +1,13 @@
 import { Builtin, type EntityLike, pair, type RawId } from '@rbxts/toucan'
-import type { EntityNode } from '../../descriptor'
-import type { Theme } from '../../themes'
-import { formatMs } from '../../util/format'
-import { Frame } from '../../util/instance'
+import type { EntityNode } from '../../../descriptor'
+import type { Theme } from '../../../themes'
+import { formatMs } from '../../../util/format'
+import { Frame } from '../../../util/instance'
 import entityView, {
 	drawEntityDetails,
 	EntityView,
 	getEntityIcon,
-} from './entityView'
+} from '../entityView'
 
 function updateView(view: EntityView, node: EntityNode, theme: Theme): void {
 	const icon = getEntityIcon(node.kind, theme)

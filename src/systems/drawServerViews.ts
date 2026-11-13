@@ -7,7 +7,7 @@ import {
 import type { Theme } from '../themes'
 import { ServerEntityList } from '../ui/explorer/entityList'
 import type { EntityView } from '../ui/explorer/entityView'
-import { syncEntityViews } from '../ui/explorer/viewSync'
+import { syncEntityViews } from '../ui/explorer/entityView/viewSync'
 import { ScrollingFrame } from '../util/instance'
 
 // Persists server views across snapshots so collapsible's expansion state survives refreshes.
