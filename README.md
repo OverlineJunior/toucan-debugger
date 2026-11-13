@@ -23,11 +23,26 @@ npm install @rbxts/toucan-debugger
 
 ## Usage
 
-Pass the plugin to your scheduler before calling `run()`. It must be used on the client.
+Pass the plugin to your scheduler before calling `run()`. It must be used on both client and server.
+
+Client:
 
 ```ts
-import toucanDebugger, { themes } from "@rbxts/toucan-debugger";
+import toucanDebuggerClient, { themes } from "@rbxts/toucan-debugger";
 
-// Passing a theme is optional — defaults to black.
-scheduler().usePlugin(toucanDebugger, themes.black).run();
+// Passing a theme is optional — defaults to dark.
+scheduler()
+    .usePlugin(toucanDebuggerClient, {
+        toggleKeybind: Enum.KeyCode.F4,
+        theme: themes.black,
+    })
+    .run();
+```
+
+Server:
+
+```ts
+import toucanDebuggerServer from "@rbxts/toucan-debugger";
+
+scheduler().usePlugin(toucanDebuggerServer).run();
 ```
