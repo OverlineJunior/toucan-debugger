@@ -26,13 +26,14 @@ export function broadcastServerSnapshot(): void {
  * Spawns the server side of the debugger.
  *
  * @remarks
- * Throws if used on the client.
+ * - Throws if used on the client.
+ * - Yields if client plugin not added.
  *
  * @example
  * ```ts
  * import { toucanDebuggerServer } from '@rbxts/toucan-debugger'
  *
- * scheduler().usePlugin(toucanDebuggerServer, { serverInterval: 1 }).run()
+ * scheduler().usePlugin(toucanDebuggerServer).run()
  * ```
  */
 export function toucanDebuggerServer(

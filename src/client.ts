@@ -24,7 +24,8 @@ export function bindReceiveServerSnapshot(): void {
  * Spawns a visual debugger.
  *
  * @remarks
- * Throws if used on the server.
+ * - Throws if used on the server.
+ * - Yields if server plugin not added.
  *
  * @example
  * ```ts
