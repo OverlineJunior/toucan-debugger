@@ -39,13 +39,13 @@ export function broadcastServerSnapshot(): void {
  */
 export function toucanDebuggerServer(
 	scheduler: Scheduler,
-	options: ServerDebuggerOptions = {},
+	options?: ServerDebuggerOptions,
 ): void {
 	if (!RunService.IsServer()) {
 		error("Toucan's debugger server plugin can only be used on the server")
 	}
 
-	serverInterval = options.serverUpdateInterval ?? DEFAULT_SERVER_INTERVAL
+	serverInterval = options?.serverUpdateInterval ?? DEFAULT_SERVER_INTERVAL
 
 	scheduler.useSystem('last', broadcastServerSnapshot)
 }

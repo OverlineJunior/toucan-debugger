@@ -1,4 +1,5 @@
 import blackTheme from './black'
+import darkTheme from './dark'
 import whiteTheme from './white'
 
 export const ROBLOX_TOPBAR_HEIGHT = 58
@@ -50,5 +51,6 @@ export interface Theme {
 
 export const themes = {
 	black: blackTheme,
+	dark: darkTheme,
 	white: whiteTheme,
 }

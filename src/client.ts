@@ -41,22 +41,23 @@ export function bindReceiveServerSnapshot(): void {
  */
 export function toucanDebuggerClient(
 	scheduler: Scheduler,
-	options: ClientDebuggerOptions,
+	options?: ClientDebuggerOptions,
 ): void {
 	if (RunService.IsServer()) {
 		error("Toucan's debugger can only be used on the client")
 	}
 
+	const theme = options?.theme ?? themes.dark
 	const client = Players.LocalPlayer
 	const playerGui = client.WaitForChild('PlayerGui')
 
 	scheduler
-		.useSystem('preStartup', setupDebuggerPanel, { args: [playerGui, options.theme] })
+		.useSystem('preStartup', setupDebuggerPanel, { args: [playerGui, theme] })
 		.useSystem('preStartup', bindEntityViewCleanup)
 		.useSystem('preStartup', bindReceiveServerSnapshot)
 		.useSystemChain('last', [
-			[drawClientViews, { args: [options.theme] }],
-			[drawServerViews, { args: [options.theme] }],
-			[updateCollapsible, { args: [options.theme] }],
+			[drawClientViews, { args: [theme] }],
+			[drawServerViews, { args: [theme] }],
+			[updateCollapsible, { args: [theme] }],
 		])
 }
