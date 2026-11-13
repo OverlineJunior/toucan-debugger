@@ -36,7 +36,7 @@ export function bindReceiveServerSnapshot(): void {
  * import { toucanDebuggerClient, themes } from '@rbxts/toucan-debugger'
  *
  * // Passing a theme is optional — defaults to black.
- * scheduler().usePlugin(toucanDebuggerClient, themes.black).run()
+ * scheduler().usePlugin(toucanDebuggerClient, {theme: themes.black }).run()
  * ```
  */
 export function toucanDebuggerClient(
