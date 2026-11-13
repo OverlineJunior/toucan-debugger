@@ -50,7 +50,10 @@ export default function entityView(
 		toggleButton: header.root[1],
 		chevron: header.chevron[1],
 		body: body.root[1],
-		hasChildren: () => root[0].children().some((c) => c.has(EntityView)),
+		hasChildren: () =>
+			body.root[1]
+				.GetChildren()
+				.some((c) => c.IsA('GuiObject') && c !== body.details[1]),
 	})
 
 	const result: EntityView = { root, header, body }

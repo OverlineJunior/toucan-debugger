@@ -17,32 +17,40 @@ function hasContent(body: GuiObject): boolean {
 }
 
 export function updateCollapsible(theme: Theme) {
-	query(Collapsible).forEach(
-		(e, { toggleButton, chevron, body, hasChildren }) => {
-			const syncChevron = () => {
+	query(Collapsible)
+		.without(CollapsibleInitialized)
+		.forEach((e, { toggleButton, chevron, body, hasChildren }) => {
+			const sync = () => {
+				if (body.Visible && !hasContent(body)) {
+					body.Visible = false
+				}
+
 				chevron.Image = body.Visible
 					? theme.icons.chevronDown
 					: theme.icons.chevronRight
 				chevron.Visible = body.Visible || (hasChildren?.() ?? false)
 			}
 
-			if (!e.has(CollapsibleInitialized)) {
-				// Start closed.
-				body.Visible = false
+			// Start closed.
+			body.Visible = false
+			sync()
 
-				toggleButton.MouseButton1Click.Connect(() => {
-					if (!hasContent(body)) return
+			toggleButton.MouseButton1Click.Connect(() => {
+				if (!hasContent(body)) return
 
-					body.Visible = !body.Visible
-					syncChevron()
-				})
+				body.Visible = !body.Visible
+				sync()
+			})
 
-				e.set(CollapsibleInitialized)
-			} else if (body.Visible && !hasContent(body)) {
-				body.Visible = false
+			body.ChildAdded.Connect(sync)
+			body.ChildRemoved.Connect(sync)
+
+			for (const child of body.GetChildren()) {
+				if (child.IsA('GuiObject')) {
+					child.GetPropertyChangedSignal('Visible').Connect(sync)
+				}
 			}
 
-			syncChevron()
-		},
-	)
+			e.set(CollapsibleInitialized)
+		})
 }
