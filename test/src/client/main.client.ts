@@ -20,4 +20,4 @@ entity('frank')
 
 createTestUi()
 
-scheduler().usePlugin(toucanDebuggerClient).run()
+scheduler().usePlugin(toucanDebuggerClient, { toggleKeybind: Enum.KeyCode.F4 }).run()

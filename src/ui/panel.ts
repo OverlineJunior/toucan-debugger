@@ -1,11 +1,14 @@
 import type { Theme } from '../themes'
-import { entityFor } from '../util/instance'
+import { type EntityInstance, entityFor } from '../util/instance'
 import explorer from './explorer'
 import footer from './footer'
 import hero from './hero'
 
-export default function explorerPanel(parent: Instance, theme: Theme) {
-	entityFor('ScreenGui', {
+export default function explorerPanel(
+	parent: Instance,
+	theme: Theme,
+): EntityInstance<ScreenGui> {
+	return entityFor('ScreenGui', {
 		Name: 'toucanExplorer',
 		Parent: parent,
 		IgnoreGuiInset: true,

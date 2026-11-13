@@ -1,4 +1,4 @@
-import { Players, RunService } from '@rbxts/services'
+import { Players, RunService, UserInputService } from '@rbxts/services'
 import type { Scheduler } from '@rbxts/toucan'
 import { sendServerSnapshot } from './remotes'
 import { setServerSnapshot } from './state/explorer'
@@ -10,11 +10,25 @@ import { bindEntityViewCleanup } from './ui/explorer/entityView/viewSync'
 import explorerPanel from './ui/panel'
 
 export interface ClientDebuggerOptions {
-    theme: Theme
+	/** Theme used for the debugger UI. Defaults to `themes.dark`. */
+	theme?: Theme
+	/** Keybind used to toggle the debugger panel's visibility. */
+	toggleKeybind: Enum.KeyCode
 }
 
-function setupDebuggerPanel(parent: Instance, theme: Theme) {
-	explorerPanel(parent, theme)
+function setupDebuggerPanel(
+	parent: Instance,
+	theme: Theme,
+	toggleKeybind?: Enum.KeyCode,
+) {
+    const [, screenGui] = explorerPanel(parent, theme)
+    screenGui.Enabled = false
+
+	UserInputService.InputBegan.Connect((input, ui) => {
+		if (ui || input.KeyCode !== toggleKeybind) return
+
+		screenGui.Enabled = !screenGui.Enabled
+	})
 }
 
 /** Subscribes to server snapshot broadcasts and stores the latest one. */
@@ -35,24 +49,29 @@ export function bindReceiveServerSnapshot(): void {
  * ```ts
  * import { toucanDebuggerClient, themes } from '@rbxts/toucan-debugger'
  *
- * // Passing a theme is optional — defaults to black.
- * scheduler().usePlugin(toucanDebuggerClient, {theme: themes.black }).run()
+ * // Passing a theme is optional — defaults to dark.
+ * scheduler().usePlugin(toucanDebuggerClient, {
+ *     toggleKeybind: Enum.KeyCode.F4,
+ *     theme: themes.black,
+ * }).run()
  * ```
  */
 export function toucanDebuggerClient(
 	scheduler: Scheduler,
-	options?: ClientDebuggerOptions,
+	options: ClientDebuggerOptions,
 ): void {
 	if (RunService.IsServer()) {
 		error("Toucan's debugger can only be used on the client")
 	}
 
-	const theme = options?.theme ?? themes.dark
+	const theme = options.theme ?? themes.dark
 	const client = Players.LocalPlayer
 	const playerGui = client.WaitForChild('PlayerGui')
 
 	scheduler
-		.useSystem('preStartup', setupDebuggerPanel, { args: [playerGui, theme] })
+		.useSystem('preStartup', setupDebuggerPanel, {
+			args: [playerGui, theme, options.toggleKeybind],
+		})
 		.useSystem('preStartup', bindEntityViewCleanup)
 		.useSystem('preStartup', bindReceiveServerSnapshot)
 		.useSystemChain('last', [
