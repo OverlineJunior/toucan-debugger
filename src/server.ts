@@ -3,8 +3,8 @@ import type { Scheduler } from '@rbxts/toucan'
 import { collectEntityNodes } from './descriptor'
 import { sendServerSnapshot } from './remotes'
 
-export interface DebuggerOptions {
-	serverInterval?: number
+export interface ServerDebuggerOptions {
+	serverUpdateInterval?: number
 }
 
 const DEFAULT_SERVER_INTERVAL = 1
@@ -38,13 +38,13 @@ export function broadcastServerSnapshot(): void {
  */
 export function toucanDebuggerServer(
 	scheduler: Scheduler,
-	options: DebuggerOptions = {},
+	options: ServerDebuggerOptions = {},
 ): void {
 	if (!RunService.IsServer()) {
 		error("Toucan's debugger server plugin can only be used on the server")
 	}
 
-	serverInterval = options.serverInterval ?? DEFAULT_SERVER_INTERVAL
+	serverInterval = options.serverUpdateInterval ?? DEFAULT_SERVER_INTERVAL
 
 	scheduler.useSystem('last', broadcastServerSnapshot)
 }

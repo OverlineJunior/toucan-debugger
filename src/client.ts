@@ -9,6 +9,10 @@ import { type Theme, themes } from './themes'
 import { bindEntityViewCleanup } from './ui/explorer/entityView/viewSync'
 import explorerPanel from './ui/panel'
 
+export interface ClientDebuggerOptions {
+    theme: Theme
+}
+
 function setupDebuggerPanel(parent: Instance, theme: Theme) {
 	explorerPanel(parent, theme)
 }
@@ -37,7 +41,7 @@ export function bindReceiveServerSnapshot(): void {
  */
 export function toucanDebuggerClient(
 	scheduler: Scheduler,
-	theme = themes.black,
+	options: ClientDebuggerOptions,
 ): void {
 	if (RunService.IsServer()) {
 		error("Toucan's debugger can only be used on the client")
@@ -47,12 +51,12 @@ export function toucanDebuggerClient(
 	const playerGui = client.WaitForChild('PlayerGui')
 
 	scheduler
-		.useSystem('preStartup', setupDebuggerPanel, { args: [playerGui, theme] })
+		.useSystem('preStartup', setupDebuggerPanel, { args: [playerGui, options.theme] })
 		.useSystem('preStartup', bindEntityViewCleanup)
 		.useSystem('preStartup', bindReceiveServerSnapshot)
 		.useSystemChain('last', [
-			[drawClientViews, { args: [theme] }],
-			[drawServerViews, { args: [theme] }],
-			[updateCollapsible, { args: [theme] }],
+			[drawClientViews, { args: [options.theme] }],
+			[drawServerViews, { args: [options.theme] }],
+			[updateCollapsible, { args: [options.theme] }],
 		])
 }
