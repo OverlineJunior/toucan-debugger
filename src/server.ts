@@ -1,6 +1,7 @@
 import { RunService } from '@rbxts/services'
 import type { Scheduler } from '@rbxts/toucan'
-import { collectServerSnapshot, snapshotEvent } from './snapshot'
+import { collectEntityNodes } from './descriptor'
+import { sendServerSnapshot } from './remotes'
 
 export interface DebuggerOptions {
 	serverInterval?: number
@@ -17,8 +18,8 @@ export function broadcastServerSnapshot(): void {
 	if (now - lastBroadcast < serverInterval) return
 	lastBroadcast = now
 
-	const snapshot = collectServerSnapshot()
-	snapshotEvent.FireAllClients(snapshot)
+	const snapshot = collectEntityNodes()
+	sendServerSnapshot.FireAllClients(snapshot)
 }
 
 /**

@@ -1,4 +1,4 @@
-import { Builtin, type EntityLike, type RawId } from '@rbxts/toucan'
+import { Builtin, type EntityLike, query, type RawId } from '@rbxts/toucan'
 
 export type EntityKind =
 	| 'entity'
@@ -17,6 +17,10 @@ export interface EntityDescriptor {
 	relationships?: string[]
 }
 
+export interface EntityNode extends EntityDescriptor {
+	parentId?: RawId
+}
+
 /** Returns the debugger kind for an entity-like value. */
 export function getEntityKind(e: EntityLike): EntityKind {
 	if (e.has(Builtin.Component)) return 'component'
@@ -29,10 +33,12 @@ export function getEntityKind(e: EntityLike): EntityKind {
 
 /** Builds a serializable descriptor for an entity-like value. */
 export function describeEntity(e: EntityLike): EntityDescriptor {
+	const kind = getEntityKind(e)
 	return {
 		id: e.id,
 		label: e.toString(),
-		kind: getEntityKind(e),
+		kind,
+		runtimeMs: kind === 'system' ? e.get(Builtin.System)?.runtimeMs : undefined,
 		components: e.components().map((c) => c.toString()),
 		relationships: e
 			.relationships()
@@ -40,4 +46,36 @@ export function describeEntity(e: EntityLike): EntityDescriptor {
 			.filter((p) => p.relation.id !== Builtin.ChildOf.id)
 			.map((p) => `(${p.relation}, ${p.target})`),
 	}
+}
+
+/**
+ * Collects every entity as a flat list of descriptors.
+ *
+ * Parent-child hierarchy is represented by EntityNode's parentId.
+ */
+export function collectEntityNodes(
+	shouldInclude?: (e: EntityLike) => boolean,
+): EntityNode[] {
+	const nodes: EntityNode[] = []
+	const seen = new Set<RawId>()
+
+	const visit = (e: EntityLike, parentId?: RawId) => {
+		if (seen.has(e.id) || (shouldInclude && !shouldInclude(e))) return
+		seen.add(e.id)
+
+		nodes.push({ ...describeEntity(e), parentId })
+
+		for (const child of e.children()) {
+			visit(child, e.id)
+		}
+	}
+
+	const kinds = [Builtin.Entity, Builtin.Component, Builtin.Resource]
+	for (const kind of kinds) {
+		query(kind)
+			.filter((e) => e.parent() === undefined)
+			.forEach((e) => visit(e))
+	}
+
+	return nodes
 }

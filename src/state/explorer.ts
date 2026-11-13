@@ -1,5 +1,5 @@
 import { component, query } from '@rbxts/toucan'
-import type { ServerSnapshot } from '../snapshot'
+import type { EntityNode } from '../descriptor'
 import type { Theme } from '../themes'
 import { ClientEntityList, ServerEntityList } from '../ui/explorer/entityList'
 import { ScrollingFrame } from '../util/instance'
@@ -13,7 +13,7 @@ export const EnvToggle = component<{
 
 let activeEnv: ExplorerEnv = 'client'
 let snapshotDirty = false
-let serverSnapshot: ServerSnapshot = []
+let serverSnapshot: EntityNode[] = []
 
 /** Returns the currently visible explorer environment. */
 export function getActiveEnv(): ExplorerEnv {
@@ -21,12 +21,12 @@ export function getActiveEnv(): ExplorerEnv {
 }
 
 /** Returns the latest server snapshot. */
-export function getServerSnapshot(): ServerSnapshot {
+export function getServerSnapshot(): EntityNode[] {
 	return serverSnapshot
 }
 
 /** Stores a new server snapshot and marks it dirty. */
-export function setServerSnapshot(snapshot: ServerSnapshot): void {
+export function setServerSnapshot(snapshot: EntityNode[]): void {
 	serverSnapshot = snapshot
 	snapshotDirty = true
 }

@@ -15,6 +15,7 @@ import { type EntityInstance, entityFor } from '../../util/instance'
 const HEADER_HEIGHT = 20
 
 export const NoView = component('NoView')
+export const EntityView = component('EntityView')
 const DetailSectionTitleFor = component<TextLabel>('DetailSectionTitleFor')
 const DetailItemFor = component<TextLabel>('DetailItemFor')
 
@@ -195,7 +196,7 @@ function makeDetailContainer(theme: Theme): EntityInstance<Frame> {
 		AutomaticSize: Enum.AutomaticSize.Y,
 		Transparency: 1,
 		Visible: false,
-		LayoutOrder: 1e6,
+		LayoutOrder: math.huge,
 
 		children: [
 			entityFor('UIListLayout', {

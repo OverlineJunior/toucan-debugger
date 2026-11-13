@@ -1,18 +1,12 @@
 import { Players, RunService } from '@rbxts/services'
 import type { Scheduler } from '@rbxts/toucan'
-import { snapshotEvent } from './snapshot'
+import { sendServerSnapshot } from './remotes'
 import { setServerSnapshot } from './state/explorer'
 import { updateCollapsible } from './systems/collapsible'
-import {
-	bindClientViewCleanup,
-	drawClientViews,
-} from './systems/drawClientViews'
-import {
-	bindServerViewCleanup,
-	drawServerViews,
-} from './systems/drawServerViews'
-import { updateRuntimeLabel } from './systems/updateRuntimeLabel'
+import { drawClientViews } from './systems/drawClientViews'
+import { drawServerViews } from './systems/drawServerViews'
 import { type Theme, themes } from './themes'
+import { bindEntityViewCleanup } from './ui/explorer/viewSync'
 import explorerPanel from './ui/panel'
 
 function setupDebuggerPanel(parent: Instance, theme: Theme) {
@@ -20,8 +14,8 @@ function setupDebuggerPanel(parent: Instance, theme: Theme) {
 }
 
 /** Subscribes to server snapshot broadcasts and stores the latest one. */
-export function bindServerSnapshot(): void {
-	snapshotEvent.OnClientEvent.Connect((snapshot) => {
+export function bindReceiveServerSnapshot(): void {
+	sendServerSnapshot.OnClientEvent.Connect((snapshot) => {
 		setServerSnapshot(snapshot)
 	})
 }
@@ -53,13 +47,11 @@ export function toucanDebuggerClient(
 
 	scheduler
 		.useSystem('preStartup', setupDebuggerPanel, { args: [playerGui, theme] })
-		.useSystem('preStartup', bindClientViewCleanup)
-		.useSystem('preStartup', bindServerViewCleanup)
-		.useSystem('preStartup', bindServerSnapshot)
+		.useSystem('preStartup', bindEntityViewCleanup)
+		.useSystem('preStartup', bindReceiveServerSnapshot)
 		.useSystemChain('last', [
 			[drawClientViews, { args: [theme] }],
 			[drawServerViews, { args: [theme] }],
 			[updateCollapsible, { args: [theme] }],
-			updateRuntimeLabel,
 		])
 }
