@@ -4,6 +4,7 @@ import { collectEntityNodes } from './descriptor'
 import { sendServerSnapshot } from './remotes'
 
 export interface ServerDebuggerOptions {
+    /** How frequent the server debugger retrieves information from the server; in seconds. */
 	serverUpdateInterval?: number
 }
 
