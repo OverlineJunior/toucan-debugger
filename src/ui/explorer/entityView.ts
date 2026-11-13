@@ -196,7 +196,7 @@ function makeDetailContainer(theme: Theme): EntityInstance<Frame> {
 		AutomaticSize: Enum.AutomaticSize.Y,
 		Transparency: 1,
 		Visible: false,
-		LayoutOrder: math.huge,
+		LayoutOrder: 1e6,
 
 		children: [
 			entityFor('UIListLayout', {
