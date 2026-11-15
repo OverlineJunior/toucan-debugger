@@ -1,5 +1,5 @@
 import { Builtin, component, entity, pair, scheduler } from '@rbxts/toucan'
-import { themes, toucanDebuggerClient } from '@rbxts/toucan-debugger'
+import { toucanDebuggerClient } from '@rbxts/toucan-debugger'
 import { createTestUi } from './testUi'
 
 entity('moon').set(
@@ -20,4 +20,6 @@ entity('frank')
 
 createTestUi()
 
-scheduler().usePlugin(toucanDebuggerClient, { toggleKeybind: Enum.KeyCode.F4 }).run()
+scheduler()
+	.usePlugin(toucanDebuggerClient, { toggleKeybind: Enum.KeyCode.F4 })
+	.run()
